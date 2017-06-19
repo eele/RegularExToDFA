@@ -43,7 +43,7 @@ public class MainUI {
 		blank.setPreferredSize(new Dimension(680, 20));
 		JLabel label = new JLabel("   正则表达式： "); // 标签
 		label.setFont(new Font("宋体", Font.BOLD, 15));
-		text = new JTextField(); // 输入框
+		text = new JTextField("a"); // 输入框
 		text.setPreferredSize(new Dimension(430, 30));
 		button = new JButton("转换"); // 转换按钮
 		hPanel.add(blank);
@@ -82,11 +82,11 @@ public class MainUI {
 	}
 
 	private static void setButtonAction() {
-		SymListener symListener = new SymListener(button, text, tabPanel1, tabPanel2);
-		button.addActionListener(symListener);  // 添加转换按钮动作
+		AcListener acListener = new AcListener(button, text, tabPanel1, tabPanel2);
+		button.addActionListener(acListener);  // 添加转换按钮动作
 		
 		 //设置快捷键为回车键
-		button.registerKeyboardAction(symListener,
+		button.registerKeyboardAction(acListener,
 	      KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
 	        JComponent.WHEN_IN_FOCUSED_WINDOW);
 	}
