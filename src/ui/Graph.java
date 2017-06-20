@@ -30,12 +30,7 @@ public class Graph extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 
-		paintState(g, "0", 100, 100);
-		paintState(g, "1", 200, 100);
-		getStateCoordinate();
-
-		for (int i = 0; i < 360; i = i + 10)
-			paintLoop(g, 200, 100, i, "a");
+		List<List<Integer>> coordList = paintTotalStates(g);
 	}
 
 	/**
@@ -79,7 +74,7 @@ public class Graph extends JPanel {
 		g2d.translate(-(x + 18), -(y + 18));
 	}
 
-	private List<Map<String, String>> getStateCoordinate() {
+	private List<List<Integer>> paintTotalStates(Graphics g) {
 		List<List<Integer>> layerList = new ArrayList<List<Integer>>();
 		StateMatrix stateMatrix = new StateMatrix();
 
@@ -107,7 +102,36 @@ public class Graph extends JPanel {
 			layer++;
 		}
 		
+		int max = 0;
+		for(List<Integer> st: layerList) { // 获取各层次状态数的最大值
+			if(st.size() > max) {
+				max = st.size();
+			}
+		}
 		
-		return null;
+		List<List<Integer>> coordList = new ArrayList<List<Integer>>(); // 坐标列表
+		paintState(g, "0", 60, max / 2 * 75 + 30);  // 绘制0号状态结点
+		List<Integer> coord = new ArrayList<Integer>();
+		coord.add(0);
+		coord.add(60);
+		coord.add(max / 2 * 75 + 30);
+		coordList.add(coord);
+		int layerNum = 1;
+		for(List<Integer> st: layerList) {  // 绘制各状态结点
+			int n = 0;
+			for(int stateNum: st) {
+				if(stateNum == 0) {
+					continue;
+				}
+				paintState(g, String.valueOf(stateNum), 80 * layerNum - 20, n * 75 + 30);
+				coord.add(stateNum);
+				coord.add(80 * layerNum - 20);
+				coord.add(n * 75 + 30);
+				coordList.add(coord);
+				n++;
+			}
+			layerNum++;
+		}
+		return coordList;
 	}
 }
