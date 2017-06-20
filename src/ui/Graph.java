@@ -5,10 +5,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import javax.swing.JPanel;
 
 import data.StateMatrix;
@@ -31,6 +31,27 @@ public class Graph extends JPanel {
 		super.paint(g);
 
 		List<List<Integer>> coordList = paintTotalStates(g);
+		paintLine(g,
+				coordList.get(0).get(1),
+				coordList.get(0).get(2),
+				coordList.get(1).get(1),
+				coordList.get(1).get(2),
+				"a"
+				);
+		paintLine(g,
+				coordList.get(0).get(1),
+				coordList.get(0).get(2),
+				coordList.get(2).get(1),
+				coordList.get(2).get(2),
+				"a"
+				);
+		paintLine(g,
+				coordList.get(0).get(1),
+				coordList.get(0).get(2),
+				coordList.get(3).get(1),
+				coordList.get(3).get(2),
+				"a"
+				);
 	}
 
 	/**
@@ -45,6 +66,42 @@ public class Graph extends JPanel {
 		g.drawOval(x, y, 36, 36);
 		g.setFont(new Font("宋体", Font.BOLD, 18));
 		g.drawString(num, x + 13, y + 25);
+	}
+	
+	/**
+	 * 绘制连接线
+	 * @param g
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @param label
+	 */
+	private void paintLine(Graphics g, int x1, int y1, int x2, int y2, String label) {
+		int angle1 = (int) (Math.atan(((double)(y1 - y2)) / ((double)( x2 - x1))) * 180 / Math.PI);
+		int angle2 = angle1 + 180;
+		
+		int xl1 = (int)(x1 + 18 + Math.cos(((double)angle1) / 180 * Math.PI) * 18);
+		int yl1 = (int)(y1 + 18 - Math.sin(((double)angle1) / 180 * Math.PI) * 18);
+		int xl2 = (int)(x2 + 18 + Math.cos(((double)angle2) / 180 * Math.PI) * 18);
+		int yl2 = (int)(y2 + 18 - Math.sin(((double)angle2) / 180 * Math.PI) * 18);
+		g.drawLine(xl1, yl1, xl2, yl2);
+		
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.translate(xl2, yl2); // 原点位置
+		g2d.rotate((90 - angle2) * Math.PI / 180);
+		int[] xs = { 0, -5, 5 };
+		int[] ys = { 0, -12, -12 };
+		g2d.fillPolygon(xs, ys, 3); // 实心箭头
+		g2d.rotate((270 + angle2) * Math.PI / 180); // 恢复旋转角度和原点位置
+		g2d.translate(-xl2, -yl2);
+		
+//		GeneralPath path = new GeneralPath();
+//		path.moveTo(xl1, yl1);
+//		path.curveTo((xl1 + xl2) / 2-10, (yl1 + yl2) / 2, (xl1 + xl2) / 2, (yl1 + yl2) / 2, xl2, yl2);
+//		Graphics2D g2d = (Graphics2D) g;
+//		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//		g2d.draw(path);
 	}
 
 	/**
@@ -124,6 +181,7 @@ public class Graph extends JPanel {
 					continue;
 				}
 				paintState(g, String.valueOf(stateNum), 80 * layerNum - 20, n * 75 + 30);
+				coord = new ArrayList<Integer>();
 				coord.add(stateNum);
 				coord.add(80 * layerNum - 20);
 				coord.add(n * 75 + 30);
