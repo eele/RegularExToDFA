@@ -5,8 +5,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
+
+import data.StateMatrix;
 
 /**
  * 状态转换图类
@@ -27,9 +32,10 @@ public class Graph extends JPanel {
 
 		paintState(g, "0", 100, 100);
 		paintState(g, "1", 200, 100);
+		getStateCoordinate();
 
-		for(int i=0;i<360;i=i+10)
-		paintLoop(g, 200, 100, i, "a");
+		for (int i = 0; i < 360; i = i + 10)
+			paintLoop(g, 200, 100, i, "a");
 	}
 
 	/**
@@ -69,7 +75,39 @@ public class Graph extends JPanel {
 		int[] ys = { -29, -26, -15 };
 		g2d.fillPolygon(xs, ys, 3); // 实心箭头
 
-		g2d.rotate((360 - angle) * Math.PI / 180);  // 恢复旋转角度和原点位置
+		g2d.rotate((360 - angle) * Math.PI / 180); // 恢复旋转角度和原点位置
 		g2d.translate(-(x + 18), -(y + 18));
+	}
+
+	private List<Map<String, String>> getStateCoordinate() {
+		List<List<Integer>> layerList = new ArrayList<List<Integer>>();
+		StateMatrix stateMatrix = new StateMatrix();
+
+		List<Integer> stateList = new ArrayList<Integer>();
+		stateList.add(0);
+		layerList.add(stateList);
+		int[] hArray = new int[100]; // 重复检测数组
+		for (int i = 0; i < 100; i++) {
+			hArray[i] = 0;
+		}
+		int count = 0, state = 0, layer = 0; // 当前加入的状态数、上一层的各状态编号、上一层号
+		while (count < stateMatrix.stateTotal() - 1) {  // 生成状态结点的层次排列
+			stateList = new ArrayList<Integer>();
+			for (int i = 0; i < layerList.get(layer).size(); i++) {
+				state = layerList.get(layer).get(i);
+				for (int m = 1; m < stateMatrix.getMatrix()[state].length; m++) {
+					if ((stateMatrix.getMatrix()[state][m] > state) && (hArray[stateMatrix.getMatrix()[state][m]] == 0)) {
+						stateList.add(stateMatrix.getMatrix()[state][m]);
+						hArray[stateMatrix.getMatrix()[state][m]] = 1;
+						count++;
+					}
+				}
+			}
+			layerList.add(stateList);
+			layer++;
+		}
+		
+		
+		return null;
 	}
 }
