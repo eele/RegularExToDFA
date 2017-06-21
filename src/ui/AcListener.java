@@ -12,16 +12,16 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
- * °´Å¥¶¯×÷¼àÌıÀà
+ * æŒ‰é’®åŠ¨ä½œç›‘å¬ç±»
  * @author ele
  *
  */
 public class AcListener implements ActionListener {
 
-	private JButton button = null; // °´Å¥
-	private JTextField text = null; // ÊäÈë¿ò
-	private JPanel tabPanel1 = null; // DFA×´Ì¬×ª»»Í¼Ãæ°å
-	private JPanel tabPanel2 = null; // DFA×´Ì¬×ª»»¾ØÕóÃæ°å
+	private JButton button = null; // æŒ‰é’®
+	private JTextField text = null; // è¾“å…¥æ¡†
+	private JPanel tabPanel1 = null; // DFAçŠ¶æ€è½¬æ¢å›¾é¢æ¿
+	private JPanel tabPanel2 = null; // DFAçŠ¶æ€è½¬æ¢çŸ©é˜µé¢æ¿
 
 	public AcListener(JButton button, JTextField text, JPanel tabPanel1, JPanel tabPanel2) {
 		this.button = button;
@@ -30,24 +30,23 @@ public class AcListener implements ActionListener {
 		this.tabPanel2 = tabPanel2;
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object obj = e.getSource();
 		if (obj == button) {
-			if (text.getText().trim().equals("")) {  // ÎÄ±¾¿òÎª¿ÕÊ±£¬ÏÔÊ¾ÊäÈëÌáÊ¾
-				JLabel msg1 = new JLabel("ÇëÊäÈëÕıÔò±í´ïÊ½ ");
-				msg1.setFont(new Font("ËÎÌå", Font.BOLD, 16));
-				JLabel msg2 = new JLabel("ÇëÊäÈëÕıÔò±í´ïÊ½ ");
-				msg2.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+			if (text.getText().trim().equals("")) {  // æ–‡æœ¬æ¡†ä¸ºç©ºæ—¶ï¼Œæ˜¾ç¤ºè¾“å…¥æç¤º
+				JLabel msg1 = new JLabel("è¯·è¾“å…¥æ­£åˆ™è¡¨è¾¾å¼ ");
+				msg1.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+				JLabel msg2 = new JLabel("è¯·è¾“å…¥æ­£åˆ™è¡¨è¾¾å¼ ");
+				msg2.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
 				msg1.setPreferredSize(new Dimension(710, 380));
 				msg1.setVerticalAlignment(SwingConstants.CENTER);
 				msg1.setHorizontalAlignment(SwingConstants.CENTER);
 				msg2.setPreferredSize(new Dimension(710, 380));
 				msg2.setVerticalAlignment(SwingConstants.CENTER);
 				msg2.setHorizontalAlignment(SwingConstants.CENTER);
-				tabPanel1.removeAll();   // Çå¿ÕÃæ°å
-				tabPanel2.removeAll();   // Çå¿ÕÃæ°å
+				tabPanel1.removeAll();   // æ¸…ç©ºé¢æ¿
+				tabPanel2.removeAll();   // æ¸…ç©ºé¢æ¿
 				tabPanel1.add(msg1);
 				tabPanel2.add(msg2);
 				tabPanel1.updateUI();
@@ -55,14 +54,14 @@ public class AcListener implements ActionListener {
 				tabPanel2.updateUI();
 				tabPanel2.repaint();
 			} else {
-				tabPanel1.removeAll();   // Çå¿ÕÃæ°å
+				tabPanel1.removeAll();   // æ¸…ç©ºé¢æ¿
 				tabPanel1.updateUI();
 				tabPanel1.repaint();
 				tabPanel2.removeAll();
 				tabPanel2.updateUI();
 				tabPanel2.repaint();
 				
-				Graph graph = new Graph();  // »æÖÆ×´Ì¬×ª»»Í¼
+				Graph graph = new Graph();  // ç»˜åˆ¶çŠ¶æ€è½¬æ¢å›¾
 				tabPanel1.add(graph);
 				tabPanel1.updateUI();
 				tabPanel1.repaint();

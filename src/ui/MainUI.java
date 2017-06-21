@@ -1,4 +1,4 @@
-package ui;
+ï»¿package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,10 +19,10 @@ import javax.swing.SwingConstants;
 
 public class MainUI {
 
-	private static JButton button = null; // ×ª»»°´Å¥
-	private static JTextField text = null; // ÊäÈë¿ò
-	private static JPanel tabPanel1 = null; // DFA×´Ì¬×ª»»Í¼Ãæ°å
-	private static JPanel tabPanel2 = null; // DFA×´Ì¬×ª»»¾ØÕóÃæ°å
+	private static JButton button = null; // è½¬æ¢æŒ‰é’®
+	private static JTextField text = null; // è¾“å…¥æ¡†
+	private static JPanel tabPanel1 = null; // DFAçŠ¶æ€è½¬æ¢å›¾é¢æ¿
+	private static JPanel tabPanel2 = null; // DFAçŠ¶æ€è½¬æ¢çŸ©é˜µé¢æ¿
 
 	public static void main(String args[]) {
 		setUI();
@@ -30,36 +30,36 @@ public class MainUI {
 	}
 
 	private static void setUI() {
-		JFrame frame = new JFrame("Õı¹æ±í´ïÊ½µ½DFA×ª»¯¹¤¾ß");
-		frame.setSize(710, 580); // ÉèÖÃ×é¼şµÄ´óĞ¡
-		frame.setBackground(Color.WHITE); // ½«±³¾°ÉèÖÃ³É°×É«
-		frame.setLocation(100, 80); // ÉèÖÃ×é¼şµÄÏÔÊ¾Î»ÖÃ
+		JFrame frame = new JFrame("æ­£è§„è¡¨è¾¾å¼åˆ°DFAè½¬åŒ–å·¥å…·");
+		frame.setSize(710, 580); // è®¾ç½®ç»„ä»¶çš„å¤§å°
+		frame.setBackground(Color.WHITE); // å°†èƒŒæ™¯è®¾ç½®æˆç™½è‰²
+		frame.setLocation(100, 80); // è®¾ç½®ç»„ä»¶çš„æ˜¾ç¤ºä½ç½®
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JPanel hPanel = new JPanel(); // ¶¥²¿Ãæ°å
+		JPanel hPanel = new JPanel(); // é¡¶éƒ¨é¢æ¿
 		hPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 3));
 		hPanel.setPreferredSize(new Dimension(710, 80));
-		JLabel blank = new JLabel(); // ¶¥²¿¿Õ°×´¦
+		JLabel blank = new JLabel(); // é¡¶éƒ¨ç©ºç™½å¤„
 		blank.setPreferredSize(new Dimension(680, 20));
-		JLabel label = new JLabel("   ÕıÔò±í´ïÊ½£º "); // ±êÇ©
-		label.setFont(new Font("ËÎÌå", Font.BOLD, 15));
-		text = new JTextField("a"); // ÊäÈë¿ò
+		JLabel label = new JLabel("   æ­£åˆ™è¡¨è¾¾å¼ï¼š "); // æ ‡ç­¾
+		label.setFont(new Font("å®‹ä½“", Font.BOLD, 15));
+		text = new JTextField("a"); // è¾“å…¥æ¡†
 		text.setPreferredSize(new Dimension(430, 30));
-		button = new JButton("×ª»»"); // ×ª»»°´Å¥
+		button = new JButton("è½¬æ¢"); // è½¬æ¢æŒ‰é’®
 		hPanel.add(blank);
 		hPanel.add(label);
 		hPanel.add(text);
 		hPanel.add(button);
 
-		JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP); // Ñ¡Ïî¿¨
-		tabPane.setFont(new Font("ËÎÌå", Font.BOLD, 13));
+		JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP); // é€‰é¡¹å¡
+		tabPane.setFont(new Font("å®‹ä½“", Font.BOLD, 13));
 		
 		tabPanel1 = new JPanel();
 		tabPanel2 = new JPanel();
-		JLabel msg1 = new JLabel("ÇëÊäÈëÕıÔò±í´ïÊ½ ");
-		msg1.setFont(new Font("ËÎÌå", Font.BOLD, 16));
-		JLabel msg2 = new JLabel("ÇëÊäÈëÕıÔò±í´ïÊ½ ");
-		msg2.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+		JLabel msg1 = new JLabel("è¯·è¾“å…¥æ­£åˆ™è¡¨è¾¾å¼ ");
+		msg1.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		JLabel msg2 = new JLabel("è¯·è¾“å…¥æ­£åˆ™è¡¨è¾¾å¼ ");
+		msg2.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
 		msg1.setPreferredSize(new Dimension(710, 380));
 		msg1.setVerticalAlignment(SwingConstants.CENTER);
 		msg1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -69,8 +69,8 @@ public class MainUI {
 		tabPanel1.add(msg1);
 		tabPanel2.add(msg2);
 		
-		tabPane.addTab("DFA×´Ì¬×ª»»Í¼", tabPanel1);
-		tabPane.addTab("DFA×´Ì¬×ª»»¾ØÕó", tabPanel2);
+		tabPane.addTab("DFAçŠ¶æ€è½¬æ¢å›¾", tabPanel1);
+		tabPane.addTab("DFAçŠ¶æ€è½¬æ¢çŸ©é˜µ", tabPanel2);
 		tabPane.setSelectedIndex(0);
 
 		frame.setLayout(new BorderLayout(3, 3));
@@ -78,14 +78,14 @@ public class MainUI {
 		frame.add(tabPane, BorderLayout.CENTER);
 
 		frame.setResizable(false);
-		frame.setVisible(true); // ÈÃ×é¼ş¿É¼û
+		frame.setVisible(true); // è®©ç»„ä»¶å¯è§
 	}
 
 	private static void setButtonAction() {
 		AcListener acListener = new AcListener(button, text, tabPanel1, tabPanel2);
-		button.addActionListener(acListener);  // Ìí¼Ó×ª»»°´Å¥¶¯×÷
+		button.addActionListener(acListener);  // æ·»åŠ è½¬æ¢æŒ‰é’®åŠ¨ä½œ
 		
-		 //ÉèÖÃ¿ì½İ¼üÎª»Ø³µ¼ü
+		 //è®¾ç½®å¿«æ·é”®ä¸ºå›è½¦é”®
 		button.registerKeyboardAction(acListener,
 	      KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
 	        JComponent.WHEN_IN_FOCUSED_WINDOW);

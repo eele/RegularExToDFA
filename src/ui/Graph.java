@@ -9,12 +9,14 @@ import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.swing.JPanel;
 
 import data.StateMatrix;
 
 /**
- * ×´Ì¬×ª»»Í¼Àà
+ * çŠ¶æ€è½¬æ¢å›¾ç±»
  * 
  * @author ele
  *
@@ -31,31 +33,18 @@ public class Graph extends JPanel {
 		super.paint(g);
 
 		List<List<Integer>> coordList = paintTotalStates(g);
-		paintLine(g,
-				coordList.get(0).get(1),
-				coordList.get(0).get(2),
-				coordList.get(1).get(1),
-				coordList.get(1).get(2),
-				"a"
-				);
-		paintLine(g,
-				coordList.get(0).get(1),
-				coordList.get(0).get(2),
-				coordList.get(2).get(1),
-				coordList.get(2).get(2),
-				"a"
-				);
-		paintLine(g,
-				coordList.get(0).get(1),
-				coordList.get(0).get(2),
-				coordList.get(3).get(1),
-				coordList.get(3).get(2),
-				"a"
-				);
+		paintTotalLinkedArrows(g, coordList);
+//		paintArrow(g,true,
+//				coordList.get(2).get(1),
+//				coordList.get(2).get(2),
+//				coordList.get(3).get(1),
+//				coordList.get(3).get(2),
+//				"a"
+//				);
 	}
 
 	/**
-	 * »æÖÆ×´Ì¬½áµã
+	 * ç»˜åˆ¶çŠ¶æ€ç»“ç‚¹
 	 * 
 	 * @param g
 	 * @param num
@@ -64,12 +53,12 @@ public class Graph extends JPanel {
 	 */
 	private void paintState(Graphics g, String num, int x, int y) {
 		g.drawOval(x, y, 36, 36);
-		g.setFont(new Font("ËÎÌå", Font.BOLD, 18));
+		g.setFont(new Font("å®‹ä½“", Font.BOLD, 18));
 		g.drawString(num, x + 13, y + 25);
 	}
 	
 	/**
-	 * »æÖÆÁ¬½ÓÏß
+	 * ç»˜åˆ¶è¿æ¥ç®­å¤´
 	 * @param g
 	 * @param x1
 	 * @param y1
@@ -77,9 +66,14 @@ public class Graph extends JPanel {
 	 * @param y2
 	 * @param label
 	 */
-	private void paintLine(Graphics g, int x1, int y1, int x2, int y2, String label) {
+	private void paintArrow(Graphics g, boolean b, int x1, int y1, int x2, int y2, String label) {
 		int angle1 = (int) (Math.atan(((double)(y1 - y2)) / ((double)( x2 - x1))) * 180 / Math.PI);
-		int angle2 = angle1 + 180;
+		int angle2 = angle1;
+		if (b) {
+			angle2 += 180;
+		} else {
+			angle1 += 180;
+		}
 		
 		int xl1 = (int)(x1 + 18 + Math.cos(((double)angle1) / 180 * Math.PI) * 18);
 		int yl1 = (int)(y1 + 18 - Math.sin(((double)angle1) / 180 * Math.PI) * 18);
@@ -88,13 +82,15 @@ public class Graph extends JPanel {
 		g.drawLine(xl1, yl1, xl2, yl2);
 		
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.translate(xl2, yl2); // Ô­µãÎ»ÖÃ
+		g2d.translate(xl2, yl2); // åŸç‚¹ä½ç½®
 		g2d.rotate((90 - angle2) * Math.PI / 180);
 		int[] xs = { 0, -5, 5 };
 		int[] ys = { 0, -12, -12 };
-		g2d.fillPolygon(xs, ys, 3); // ÊµĞÄ¼ıÍ·
-		g2d.rotate((270 + angle2) * Math.PI / 180); // »Ö¸´Ğı×ª½Ç¶ÈºÍÔ­µãÎ»ÖÃ
+		g2d.fillPolygon(xs, ys, 3); // å®å¿ƒç®­å¤´
+		g2d.rotate((270 + angle2) * Math.PI / 180); // æ¢å¤æ—‹è½¬è§’åº¦å’ŒåŸç‚¹ä½ç½®
 		g2d.translate(-xl2, -yl2);
+		
+		g2d.drawString(label, (xl1 + xl2) / 2, (yl1 + yl2) / 2);  // æ˜¾ç¤ºæ ‡ç­¾
 		
 //		GeneralPath path = new GeneralPath();
 //		path.moveTo(xl1, yl1);
@@ -105,7 +101,7 @@ public class Graph extends JPanel {
 	}
 
 	/**
-	 * »æÖÆ»·¼ıÍ·
+	 * ç»˜åˆ¶ç¯ç®­å¤´
 	 * 
 	 * @param g
 	 * @param x
@@ -115,22 +111,27 @@ public class Graph extends JPanel {
 	 */
 	private void paintLoop(Graphics g, int x, int y, int angle, String label) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.translate(x + 18, y + 18); // Ô­µãÎ»ÖÃ
+		g2d.translate(x + 18, y + 18); // åŸç‚¹ä½ç½®
 
 		g2d.drawString(label, (int) (Math.sin(angle * Math.PI / 180) * 60),
 				(int) (-Math.cos(angle * Math.PI / 180) * 60));
 
 		g2d.rotate(angle * Math.PI / 180);
-		g2d.drawArc(-11, -46, 20, 35, -45, 180 + 90); // Ô²»¡
+		g2d.drawArc(-11, -46, 20, 35, -45, 180 + 90); // åœ†å¼§
 
 		int[] xs = { 4, 15, 6 };
 		int[] ys = { -29, -26, -15 };
-		g2d.fillPolygon(xs, ys, 3); // ÊµĞÄ¼ıÍ·
+		g2d.fillPolygon(xs, ys, 3); // å®å¿ƒç®­å¤´
 
-		g2d.rotate((360 - angle) * Math.PI / 180); // »Ö¸´Ğı×ª½Ç¶ÈºÍÔ­µãÎ»ÖÃ
+		g2d.rotate((360 - angle) * Math.PI / 180); // æ¢å¤æ—‹è½¬è§’åº¦å’ŒåŸç‚¹ä½ç½®
 		g2d.translate(-(x + 18), -(y + 18));
 	}
 
+	/**
+	 * ç»˜åˆ¶æ‰€æœ‰çŠ¶æ€ç»“ç‚¹
+	 * @param g
+	 * @return
+	 */
 	private List<List<Integer>> paintTotalStates(Graphics g) {
 		List<List<Integer>> layerList = new ArrayList<List<Integer>>();
 		StateMatrix stateMatrix = new StateMatrix();
@@ -138,12 +139,12 @@ public class Graph extends JPanel {
 		List<Integer> stateList = new ArrayList<Integer>();
 		stateList.add(0);
 		layerList.add(stateList);
-		int[] hArray = new int[100]; // ÖØ¸´¼ì²âÊı×é
+		int[] hArray = new int[100]; // é‡å¤æ£€æµ‹æ•°ç»„
 		for (int i = 0; i < 100; i++) {
 			hArray[i] = 0;
 		}
-		int count = 0, state = 0, layer = 0; // µ±Ç°¼ÓÈëµÄ×´Ì¬Êı¡¢ÉÏÒ»²ãµÄ¸÷×´Ì¬±àºÅ¡¢ÉÏÒ»²ãºÅ
-		while (count < stateMatrix.stateTotal() - 1) {  // Éú³É×´Ì¬½áµãµÄ²ã´ÎÅÅÁĞ
+		int count = 0, state = 0, layer = 0; // å½“å‰åŠ å…¥çš„çŠ¶æ€æ•°ã€ä¸Šä¸€å±‚çš„å„çŠ¶æ€ç¼–å·ã€ä¸Šä¸€å±‚å·
+		while (count < stateMatrix.stateTotal() - 1) {  // ç”ŸæˆçŠ¶æ€ç»“ç‚¹çš„å±‚æ¬¡æ’åˆ—
 			stateList = new ArrayList<Integer>();
 			for (int i = 0; i < layerList.get(layer).size(); i++) {
 				state = layerList.get(layer).get(i);
@@ -160,36 +161,66 @@ public class Graph extends JPanel {
 		}
 		
 		int max = 0;
-		for(List<Integer> st: layerList) { // »ñÈ¡¸÷²ã´Î×´Ì¬ÊıµÄ×î´óÖµ
+		for(List<Integer> st: layerList) { // è·å–å„å±‚æ¬¡çŠ¶æ€æ•°çš„æœ€å¤§å€¼
 			if(st.size() > max) {
 				max = st.size();
 			}
 		}
 		
-		List<List<Integer>> coordList = new ArrayList<List<Integer>>(); // ×ø±êÁĞ±í
-		paintState(g, "0", 60, max / 2 * 75 + 30);  // »æÖÆ0ºÅ×´Ì¬½áµã
+		List<List<Integer>> coordList = new ArrayList<List<Integer>>(); // åæ ‡åˆ—è¡¨
+		paintState(g, "0", 60, max / 2 * 100 + 30);  // ç»˜åˆ¶0å·çŠ¶æ€ç»“ç‚¹
 		List<Integer> coord = new ArrayList<Integer>();
 		coord.add(0);
 		coord.add(60);
-		coord.add(max / 2 * 75 + 30);
+		coord.add(max / 2 * 100 + 30);
 		coordList.add(coord);
 		int layerNum = 1;
-		for(List<Integer> st: layerList) {  // »æÖÆ¸÷×´Ì¬½áµã
+		for(List<Integer> st: layerList) {  // ç»˜åˆ¶å„çŠ¶æ€ç»“ç‚¹
 			int n = 0;
 			for(int stateNum: st) {
 				if(stateNum == 0) {
 					continue;
 				}
-				paintState(g, String.valueOf(stateNum), 80 * layerNum - 20, n * 75 + 30);
+				paintState(g, String.valueOf(stateNum), 100 * layerNum - 40, n * 100 + 30);
 				coord = new ArrayList<Integer>();
 				coord.add(stateNum);
-				coord.add(80 * layerNum - 20);
-				coord.add(n * 75 + 30);
+				coord.add(100 * layerNum - 40);
+				coord.add(n * 100 + 30);
 				coordList.add(coord);
 				n++;
 			}
 			layerNum++;
 		}
 		return coordList;
+	}
+	
+	private List<List<Map<String, Object>>> paintTotalLinkedArrows(Graphics g, List<List<Integer>> coordList) {
+		List<List<Map<String, Object>>> arrowList = new ArrayList<List<Map<String, Object>>>();
+		StateMatrix stateMatrix = new StateMatrix();
+		
+		int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+		for(int state = 0; state < stateMatrix.stateTotal(); state++) {
+			for(int p = 1; p < stateMatrix.getMatrix()[0].length; p++) {
+				if(stateMatrix.getMatrix()[state][0] != stateMatrix.getMatrix()[state][p]) {
+					int i;
+					for(i = 0; i < coordList.size(); i++) {
+						if(coordList.get(i).get(0) == state) {
+							break;
+						}
+					}
+					x1 = coordList.get(i).get(1);
+					y1 = coordList.get(i).get(2);
+					for(i = 0; i < coordList.size(); i++) {
+						if(coordList.get(i).get(0) == p) {
+							break;
+						}
+					}
+					x2 = coordList.get(i).get(1);
+					y2 = coordList.get(i).get(2);
+					paintArrow(g, state < p, x1, y1, x2, y2, stateMatrix.getInCh()[p] + "");
+				}
+			}
+		}
+		return arrowList;
 	}
 }
