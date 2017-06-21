@@ -25,7 +25,7 @@ public class Graph extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	public Graph() {
-		this.setPreferredSize(new Dimension(710, 300));
+		this.setPreferredSize(new Dimension(710, 450));
 		this.setBackground(Color.white);
 	}
 
@@ -35,10 +35,10 @@ public class Graph extends JPanel {
 		List<List<Integer>> coordList = paintTotalStates(g);
 		paintTotalLinkedArrows(g, coordList);
 //		paintArrow(g,true,
+//				coordList.get(1).get(1),
+//				coordList.get(1).get(2),
 //				coordList.get(2).get(1),
 //				coordList.get(2).get(2),
-//				coordList.get(3).get(1),
-//				coordList.get(3).get(2),
 //				"a"
 //				);
 	}
@@ -66,10 +66,10 @@ public class Graph extends JPanel {
 	 * @param y2
 	 * @param label
 	 */
-	private void paintArrow(Graphics g, boolean b, int x1, int y1, int x2, int y2, String label) {
-		int angle1 = (int) (Math.atan(((double)(y1 - y2)) / ((double)( x2 - x1))) * 180 / Math.PI);
+	private void paintArrow(Graphics g, int x1, int y1, int x2, int y2, String label) {
+		int angle1 = (int) (Math.atan(((double)(y1 - y2)) / ((double)(x2 - x1))) * 180 / Math.PI);
 		int angle2 = angle1;
-		if (b) {
+		if (x2 >= x1) {
 			angle2 += 180;
 		} else {
 			angle1 += 180;
@@ -90,7 +90,7 @@ public class Graph extends JPanel {
 		g2d.rotate((270 + angle2) * Math.PI / 180); // 恢复旋转角度和原点位置
 		g2d.translate(-xl2, -yl2);
 		
-		g2d.drawString(label, (xl1 + xl2) / 2, (yl1 + yl2) / 2);  // 显示标签
+		g2d.drawString(label, (xl1 + xl2) / 2 + 3, (yl1 + yl2) / 2 - 5);  // 显示标签
 		
 //		GeneralPath path = new GeneralPath();
 //		path.moveTo(xl1, yl1);
@@ -168,11 +168,11 @@ public class Graph extends JPanel {
 		}
 		
 		List<List<Integer>> coordList = new ArrayList<List<Integer>>(); // 坐标列表
-		paintState(g, "0", 60, max / 2 * 100 + 30);  // 绘制0号状态结点
+		paintState(g, "0", 60, max / 2 * 110 + 30);  // 绘制0号状态结点
 		List<Integer> coord = new ArrayList<Integer>();
 		coord.add(0);
 		coord.add(60);
-		coord.add(max / 2 * 100 + 30);
+		coord.add(max / 2 * 110 + 30);
 		coordList.add(coord);
 		int layerNum = 1;
 		for(List<Integer> st: layerList) {  // 绘制各状态结点
@@ -181,11 +181,11 @@ public class Graph extends JPanel {
 				if(stateNum == 0) {
 					continue;
 				}
-				paintState(g, String.valueOf(stateNum), 100 * layerNum - 40, n * 100 + 30);
+				paintState(g, String.valueOf(stateNum), 110 * layerNum - 40, n * 110 + 30);
 				coord = new ArrayList<Integer>();
 				coord.add(stateNum);
-				coord.add(100 * layerNum - 40);
-				coord.add(n * 100 + 30);
+				coord.add(110 * layerNum - 40);
+				coord.add(n * 110 + 30);
 				coordList.add(coord);
 				n++;
 			}
@@ -194,6 +194,12 @@ public class Graph extends JPanel {
 		return coordList;
 	}
 	
+	/**
+	 * 绘制所有连接箭头
+	 * @param g
+	 * @param coordList
+	 * @return
+	 */
 	private List<List<Map<String, Object>>> paintTotalLinkedArrows(Graphics g, List<List<Integer>> coordList) {
 		List<List<Map<String, Object>>> arrowList = new ArrayList<List<Map<String, Object>>>();
 		StateMatrix stateMatrix = new StateMatrix();
@@ -201,7 +207,7 @@ public class Graph extends JPanel {
 		int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 		for(int state = 0; state < stateMatrix.stateTotal(); state++) {
 			for(int p = 1; p < stateMatrix.getMatrix()[0].length; p++) {
-				if(stateMatrix.getMatrix()[state][0] != stateMatrix.getMatrix()[state][p]) {
+				if(stateMatrix.getMatrix()[state][0] != stateMatrix.getMatrix()[state][p] && stateMatrix.getMatrix()[state][p] != -1) {
 					int i;
 					for(i = 0; i < coordList.size(); i++) {
 						if(coordList.get(i).get(0) == state) {
@@ -211,13 +217,23 @@ public class Graph extends JPanel {
 					x1 = coordList.get(i).get(1);
 					y1 = coordList.get(i).get(2);
 					for(i = 0; i < coordList.size(); i++) {
-						if(coordList.get(i).get(0) == p) {
+						if(coordList.get(i).get(0) == stateMatrix.getMatrix()[state][p]) {
 							break;
 						}
 					}
 					x2 = coordList.get(i).get(1);
 					y2 = coordList.get(i).get(2);
-					paintArrow(g, state < p, x1, y1, x2, y2, stateMatrix.getInCh()[p] + "");
+					paintArrow(g, x1, y1, x2, y2, stateMatrix.getInCh()[p] + "");  // 绘制直线箭头
+				} else {
+					int i;
+					for(i = 0; i < coordList.size(); i++) {
+						if(coordList.get(i).get(0) == state) {
+							break;
+						}
+					}
+					x1 = coordList.get(i).get(1);
+					y1 = coordList.get(i).get(2);
+					paintLoop(g, x1, y1, 180, stateMatrix.getInCh()[p] + "");  // 绘制环箭头
 				}
 			}
 		}
