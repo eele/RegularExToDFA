@@ -348,15 +348,6 @@ public class Convert {
 	 */
 	@SuppressWarnings("unchecked")
 	public int[][] createStateMatrix(Map<String, Object> map) {
-		//
-		// @SuppressWarnings("rawtypes")
-		// Set[][] matrix = new HashSet[100][set.size()];
-		// matrix[0][0].addAll((Set<Integer>) map.get("firstpos"));
-		//
-		// List<Set<Integer>> stateList = new ArrayList<Set<Integer>>(); //
-		// 状态编号表
-		// stateList.add(matrix[0][0]);
-
 		Map<Integer, Character> labelMap = (Map<Integer, Character>) map.get("label");
 		Set<Character> set = new HashSet<Character>();
 		for (Character ch : labelMap.values()) { // 获取不重复的字符集
@@ -367,15 +358,15 @@ public class Convert {
 
 		List<Set<Integer>> stateList = new ArrayList<Set<Integer>>();
 		List<List<Object>> tran = new ArrayList<List<Object>>();
+		Map<Integer, Set<Integer>> followposMap = (Map<Integer, Set<Integer>>) map.get("followpos");
 		Stack<Set<Integer>> stateStack = new Stack<Set<Integer>>();
 		stateStack.push((Set<Integer>) map.get("firstpos"));
 		while (!stateStack.isEmpty()) {
 			Set<Integer> state = stateStack.pop();
 			stateList.add(state);
 			for (Character ch : set) {
-				Map<Integer, Set<Integer>> followposMap = (Map<Integer, Set<Integer>>) map.get("followpos");
 				Set<Integer> tmpSet = new HashSet<Integer>();
-				for (int i = 1; i < followposMap.get(i).size(); i++) {
+				for (int i : state) {
 					if (labelMap.get(i) == ch) {
 						tmpSet.addAll(followposMap.get(i));
 					}
