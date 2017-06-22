@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+import core.Convert;
 import data.StateMatrix;
 
 /**
@@ -23,10 +24,14 @@ import data.StateMatrix;
  */
 public class Graph extends JPanel {
 	private static final long serialVersionUID = 1L;
+	
+	private String text = null;
 
-	public Graph() {
+	public Graph(String text) {
+		// TODO Auto-generated constructor stub
 		this.setPreferredSize(new Dimension(710, 450));
 		this.setBackground(Color.white);
+		this.text = text;
 	}
 
 	public void paint(Graphics g) {
@@ -134,7 +139,8 @@ public class Graph extends JPanel {
 	 */
 	private List<List<Integer>> paintTotalStates(Graphics g) {
 		List<List<Integer>> layerList = new ArrayList<List<Integer>>();
-		StateMatrix stateMatrix = new StateMatrix();
+		Convert convert = new Convert();
+		StateMatrix stateMatrix = convert.toDFA(text);
 
 		List<Integer> stateList = new ArrayList<Integer>();
 		stateList.add(0);
@@ -202,7 +208,8 @@ public class Graph extends JPanel {
 	 */
 	private List<List<Map<String, Object>>> paintTotalLinkedArrows(Graphics g, List<List<Integer>> coordList) {
 		List<List<Map<String, Object>>> arrowList = new ArrayList<List<Map<String, Object>>>();
-		StateMatrix stateMatrix = new StateMatrix();
+		Convert convert = new Convert();
+		StateMatrix stateMatrix = convert.toDFA(text);
 		
 		int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 		for(int state = 0; state < stateMatrix.stateTotal(); state++) {

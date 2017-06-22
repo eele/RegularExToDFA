@@ -61,12 +61,12 @@ public class AcListener implements ActionListener {
 				tabPanel2.updateUI();
 				tabPanel2.repaint();
 				
-				Graph graph = new Graph();  // 绘制状态转换图
+				Graph graph = new Graph(text.getText().trim());  // 绘制状态转换图
 				tabPanel1.add(graph);
 				tabPanel1.updateUI();
 				tabPanel1.repaint();
 				
-				Matrix matrix = new Matrix();  // 绘制状态转换图
+				Matrix matrix = new Matrix(text.getText().trim());  // 绘制状态转换图
 				tabPanel2.add(matrix);
 				tabPanel2.updateUI();
 				tabPanel2.repaint();

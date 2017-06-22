@@ -6,21 +6,27 @@ import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 
+import core.Convert;
 import data.StateMatrix;
 
 public class Matrix extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	public Matrix() {
+	private String text = null;
+	
+	public Matrix(String text) {
+		// TODO Auto-generated constructor stub
 		this.setPreferredSize(new Dimension(710, 450));
 		this.setBackground(Color.white);
+		this.text = text;
 	}
-	
+
 	public void paint(Graphics g) {
 		super.paint(g);
 		g.setFont(new Font("宋体", Font.BOLD, 18));
 		g.drawString("状态", 60, 50);
-		StateMatrix stateMatrix = new StateMatrix();
+		Convert convert = new Convert();
+		StateMatrix stateMatrix = convert.toDFA(text);
 		for(int i = 0; i < stateMatrix.getInCh().length; i++) {
 			g.drawString(stateMatrix.getInCh()[i] + "", 10 + (i + 1) * 70, 50);
 		}
