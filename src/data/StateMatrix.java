@@ -41,7 +41,13 @@ public class StateMatrix {
 	}
 	
 	public int stateTotal() {
-		return matrix.length;
+		int length = 0;
+		for(int i = 0; i < matrix.length; i++) {
+			if(matrix[i][0] != -1) {
+				length++;
+			}
+		}
+		return length;
 	}
 	
 }

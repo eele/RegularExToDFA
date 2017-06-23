@@ -151,6 +151,9 @@ public class Convert {
 		int[][] lastpos = new int[length][length];
 		int[][] followpos = new int[length][length];
 		int pos = 1;
+
+		int[][] tree = createTree(postfix); // 根据后缀表达式创建语法树
+
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < length; j++) {
 				firstpos[i][j] = lastpos[i][j] = followpos[i][j] = 0;
@@ -166,24 +169,24 @@ public class Convert {
 			} else {
 				position[i] = 0;// 运算符的position设为0
 				if (postfix.charAt(i) == '|') {
-					nullable[i] = (nullable[i - 2] || nullable[i - 1]);
+					nullable[i] = (nullable[tree[i][0]] || nullable[tree[i][1]]);
 
 					int j = 0;
-					while (firstpos[i - 1][j] != 0) {
-						firstpos[i][j] = firstpos[i - 1][j];
-						lastpos[i][j] = firstpos[i - 1][j];
+					while (firstpos[tree[i][1]][j] != 0) {
+						firstpos[i][j] = firstpos[tree[i][1]][j];
+						lastpos[i][j] = lastpos[tree[i][1]][j];
 						j++;
 					}
 					int k = 0;
 					int m;
-					while (firstpos[i - 2][k] != 0) {
+					while (firstpos[tree[i][0]][k] != 0) {
 						for (m = 0; m < j; m++) {
-							if (firstpos[i][m] == firstpos[i - 2][k])
+							if (firstpos[i][m] == firstpos[tree[i][0]][k])
 								break;
 						}
 						if (m == j) {
-							firstpos[i][j] = firstpos[i - 2][k];
-							lastpos[i][j] = firstpos[i - 2][k];
+							firstpos[i][j] = firstpos[tree[i][0]][k];
+							lastpos[i][j] = lastpos[tree[i][0]][k];
 							j++;
 						}
 						k++;
@@ -193,65 +196,64 @@ public class Convert {
 					nullable[i] = true;
 
 					int j = 0;
-					while (firstpos[i - 1][j] != 0) {
-						firstpos[i][j] = firstpos[i - 1][j];
-						lastpos[i][j] = firstpos[i - 1][j];
+					while (firstpos[tree[i][0]][j] != 0) {
+						firstpos[i][j] = firstpos[tree[i][0]][j];
+						lastpos[i][j] = lastpos[tree[i][0]][j];
 						j++;
 					}
-				} else // 连接符.
-				{
-					nullable[i] = (nullable[i - 2] && nullable[i - 1]);
+				} else { // 连接符.
+					nullable[i] = (nullable[tree[i][0]] && nullable[tree[i][1]]);
 
-					if (nullable[i - 2] == true) {
+					if (nullable[tree[i][0]] == true) {
 						int j = 0;
 						int m;
-						while (firstpos[i - 1][j] != 0) {
-							firstpos[i][j] = firstpos[i - 1][j];
+						while (firstpos[tree[i][1]][j] != 0) {
+							firstpos[i][j] = firstpos[tree[i][1]][j];
 							j++;
 						}
 						int k = 0;
-						while (firstpos[i - 2][k] != 0) {
+						while (firstpos[tree[i][0]][k] != 0) {
 							for (m = 0; m < j; m++) {
-								if (firstpos[i][m] == firstpos[i - 2][k])
+								if (firstpos[i][m] == firstpos[tree[i][0]][k])
 									break;
 							}
 							if (m == j) {
-								firstpos[i][j] = firstpos[i - 2][k];
+								firstpos[i][j] = firstpos[tree[i][0]][k];
 								j++;
 							}
 							k++;
 						}
 					} else {
 						int j = 0;
-						while (firstpos[i - 2][j] != 0) {
-							firstpos[i][j] = firstpos[i - 2][j];
+						while (firstpos[tree[i][0]][j] != 0) {
+							firstpos[i][j] = firstpos[tree[i][0]][j];
 							j++;
 						}
 					}
 
-					if (nullable[i - 1]) {
+					if (nullable[tree[i][1]]) {
 						int j = 0;
-						while (firstpos[i - 1][j] != 0) {
-							lastpos[i][j] = firstpos[i - 1][j];
+						while (lastpos[tree[i][1]][j] != 0) {
+							lastpos[i][j] = lastpos[tree[i][1]][j];
 							j++;
 						}
 						int k = 0;
 						int m;
-						while (firstpos[i - 2][k] != 0) {
+						while (lastpos[tree[i][0]][k] != 0) {
 							for (m = 0; m < j; m++) {
-								if (lastpos[i][m] == firstpos[i - 2][k])
+								if (lastpos[i][m] == lastpos[tree[i][0]][k])
 									break;
 							}
 							if (m == j) {
-								lastpos[i][j] = firstpos[i - 2][k];
+								lastpos[i][j] = lastpos[tree[i][0]][k];
 								j++;
 							}
 							k++;
 						}
 					} else {
 						int j = 0;
-						while (firstpos[i - 1][j] != 0) {
-							lastpos[i][j] = firstpos[i - 1][j];
+						while (lastpos[tree[i][1]][j] != 0) {
+							lastpos[i][j] = lastpos[tree[i][1]][j];
 							j++;
 						}
 					}
@@ -272,15 +274,15 @@ public class Convert {
 		for (int i = 0; i < length; i++) {
 			if (postfix.charAt(i) == '&') {
 				int m = 0;
-				while (lastpos[i - 2][m] != 0) {
+				while (lastpos[tree[i][0]][m] != 0) {
 					int k;
 					for (k = 0; k < length; k++) {
-						if (followpos[lastpos[i - 2][m]][k] == 0)
+						if (followpos[lastpos[tree[i][0]][m]][k] == 0)
 							break;
 					}
 					int n = 0;
-					while (firstpos[i - 1][n] != 0) {
-						followpos[lastpos[i - 2][m]][k] = firstpos[i - 1][n];
+					while (firstpos[tree[i][1]][n] != 0) {
+						followpos[lastpos[tree[i][0]][m]][k] = firstpos[tree[i][1]][n];
 						n++;
 						k++;
 					}
@@ -331,6 +333,45 @@ public class Convert {
 		return map;
 	}
 
+	/**
+	 * 创建后缀表达式的语法树
+	 * 
+	 * @param postfix
+	 * @return
+	 */
+	private int[][] createTree(String postfix) {
+		Stack<Integer> st = new Stack<Integer>();
+		int[][] tree = new int[postfix.length()][2];
+		for (int i = 0; i < postfix.length(); i++) { // 初始化语法树
+			for (int j = 0; j < 2; j++) {
+				tree[i][j] = -1;
+			}
+		}
+		for (int i = 0; i < postfix.length(); i++) {
+			switch (postfix.charAt(i)) {
+			case '*':
+				tree[i][0] = st.pop();
+				st.push(i);
+				break;
+			case '&':
+				tree[i][1] = st.pop();
+				tree[i][0] = st.pop();
+				st.push(i);
+				break;
+			case '|':
+				tree[i][1] = st.pop();
+				tree[i][0] = st.pop();
+				st.push(i);
+				break;
+			default:
+				if (Isalpha(postfix.charAt(i)) || postfix.charAt(i) == '#') {
+					st.push(i);
+				}
+			}
+		}
+		return tree;
+	}
+
 	private boolean Isalpha(char c) {
 		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 			return true;
@@ -353,7 +394,6 @@ public class Convert {
 				set.add(ch);
 			}
 		}
-		System.out.println(map);
 		List<Set<Integer>> stateList = new ArrayList<Set<Integer>>();
 		List<List<Object>> tran = new ArrayList<List<Object>>();
 		Map<Integer, Set<Integer>> followposMap = (Map<Integer, Set<Integer>>) map.get("followpos");
@@ -388,19 +428,18 @@ public class Convert {
 				}
 			}
 		}
-		System.out.println(tran);
 		List<Character> labelList = new ArrayList<Character>();
 		labelList.addAll(set);
 		int[][] intMatrix = new int[stateList.size()][set.size() + 1];
-		for(int i = 0; i < stateList.size(); i++) {
-			for(int j = 0; j < set.size() + 1; j++) {
+		for (int i = 0; i < stateList.size(); i++) {
+			for (int j = 0; j < set.size() + 1; j++) {
 				intMatrix[i][j] = -1;
 			}
 		}
 		Set<Integer> state = new HashSet<Integer>();
 		int i = -1, j = 0;
 		for (List<Object> rela : tran) {
-			if(!isSetEqual(state, (Set<Integer>) rela.get(0))) {
+			if (!isSetEqual(state, (Set<Integer>) rela.get(0))) {
 				j = 0;
 				i++;
 				intMatrix[i][j] = stateList.indexOf(rela.get(0));
@@ -409,12 +448,14 @@ public class Convert {
 			intMatrix[i][j] = stateList.indexOf(rela.get(2));
 			state = (Set<Integer>) rela.get(0);
 		}
+		
+		System.out.println(stateList);
 		StateMatrix stateMatrix = new StateMatrix();
 		stateMatrix.setMatrix(intMatrix);
 		char[] labelArray = new char[labelList.size() + 1];
 		labelArray[0] = ' ';
 		int i2 = 1;
-		for(char ch : labelList) {
+		for (char ch : labelList) {
 			labelArray[i2] = ch;
 			i2++;
 		}

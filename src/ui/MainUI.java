@@ -44,6 +44,7 @@ public class MainUI {
 		JLabel label = new JLabel("   正则表达式： "); // 标签
 		label.setFont(new Font("宋体", Font.BOLD, 15));
 		text = new JTextField("a"); // 输入框
+		text.setFont(new Font("宋体", Font.ROMAN_BASELINE, 15));
 		text.setPreferredSize(new Dimension(430, 30));
 		button = new JButton("转换"); // 转换按钮
 		hPanel.add(blank);

@@ -76,17 +76,25 @@ public class Graph extends JPanel {
 		int angle2 = angle1;
 		if (x2 >= x1) {
 			angle2 += 180;
+			angle1 -= 28;
+			angle2 += 28;
 		} else {
 			angle1 += 180;
+			angle1 += 28;
+			angle2 -= 28;
 		}
 		
 		int xl1 = (int)(x1 + 18 + Math.cos(((double)angle1) / 180 * Math.PI) * 18);
 		int yl1 = (int)(y1 + 18 - Math.sin(((double)angle1) / 180 * Math.PI) * 18);
 		int xl2 = (int)(x2 + 18 + Math.cos(((double)angle2) / 180 * Math.PI) * 18);
 		int yl2 = (int)(y2 + 18 - Math.sin(((double)angle2) / 180 * Math.PI) * 18);
-		g.drawLine(xl1, yl1, xl2, yl2);
-		
 		Graphics2D g2d = (Graphics2D) g;
+		GeneralPath path = new GeneralPath();
+		path.moveTo(xl1, yl1);
+		path.curveTo((xl1 + xl2) / 2 - 20, (yl1 + yl2) / 2 + Math.abs(xl2 - xl1) / 5, (xl1 + xl2) / 2 + 20, (yl1 + yl2) / 2 + Math.abs(xl2 - xl1) / 5, xl2, yl2);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.draw(path);
+		
 		g2d.translate(xl2, yl2); // 原点位置
 		g2d.rotate((90 - angle2) * Math.PI / 180);
 		int[] xs = { 0, -5, 5 };
@@ -97,11 +105,6 @@ public class Graph extends JPanel {
 		
 		g2d.drawString(label, (xl1 + xl2) / 2 + 3, (yl1 + yl2) / 2 - 5);  // 显示标签
 		
-//		GeneralPath path = new GeneralPath();
-//		path.moveTo(xl1, yl1);
-//		path.curveTo((xl1 + xl2) / 2 - 10, (yl1 + yl2) / 2 + 30, (xl1 + xl2) / 2, (yl1 + yl2) / 2 + 30, xl2, yl2);
-//		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//		g2d.draw(path);
 	}
 
 	/**
@@ -148,7 +151,7 @@ public class Graph extends JPanel {
 		for (int i = 0; i < 100; i++) {
 			hArray[i] = 0;
 		}
-		int count = 0, state = 0, layer = 0; // 当前加入的状态数、上一层的各状态编号、上一层号
+		int count = 0, state = 0, layer = 0; // 当前加入的状态数、上一层的各状态编号、上一层编号
 		while (count < stateMatrix.stateTotal() - 1) {  // 生成状态结点的层次排列
 			stateList = new ArrayList<Integer>();
 			for (int i = 0; i < layerList.get(layer).size(); i++) {

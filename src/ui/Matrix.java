@@ -30,7 +30,7 @@ public class Matrix extends JPanel {
 		for(int i = 0; i < stateMatrix.getInCh().length; i++) {
 			g.drawString(stateMatrix.getInCh()[i] + "", 10 + (i + 1) * 70, 50);
 		}
-		for(int i = 0; i < stateMatrix.getMatrix().length; i++) {
+		for(int i = 0; i < stateMatrix.stateTotal(); i++) {
 			for(int j = 0; j < stateMatrix.getMatrix()[i].length; j++) {
 				if(stateMatrix.getMatrix()[i][j] == -1) {
 					g.drawString("-", 10 + (j + 1) * 70, 50 + (i + 1) * 30);
