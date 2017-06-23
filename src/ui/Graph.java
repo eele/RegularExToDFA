@@ -99,8 +99,7 @@ public class Graph extends JPanel {
 		
 //		GeneralPath path = new GeneralPath();
 //		path.moveTo(xl1, yl1);
-//		path.curveTo((xl1 + xl2) / 2-10, (yl1 + yl2) / 2, (xl1 + xl2) / 2, (yl1 + yl2) / 2, xl2, yl2);
-//		Graphics2D g2d = (Graphics2D) g;
+//		path.curveTo((xl1 + xl2) / 2 - 10, (yl1 + yl2) / 2 + 30, (xl1 + xl2) / 2, (yl1 + yl2) / 2 + 30, xl2, yl2);
 //		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 //		g2d.draw(path);
 	}
@@ -232,15 +231,17 @@ public class Graph extends JPanel {
 					y2 = coordList.get(i).get(2);
 					paintArrow(g, x1, y1, x2, y2, stateMatrix.getInCh()[p] + "");  // 绘制直线箭头
 				} else {
-					int i;
-					for(i = 0; i < coordList.size(); i++) {
-						if(coordList.get(i).get(0) == state) {
-							break;
+					if(stateMatrix.getMatrix()[state][p] != -1) {
+						int i;
+						for(i = 0; i < coordList.size(); i++) {
+							if(coordList.get(i).get(0) == state) {
+								break;
+							}
 						}
+						x1 = coordList.get(i).get(1);
+						y1 = coordList.get(i).get(2);
+						paintLoop(g, x1, y1, 180, stateMatrix.getInCh()[p] + "");  // 绘制环箭头
 					}
-					x1 = coordList.get(i).get(1);
-					y1 = coordList.get(i).get(2);
-					paintLoop(g, x1, y1, 180, stateMatrix.getInCh()[p] + "");  // 绘制环箭头
 				}
 			}
 		}

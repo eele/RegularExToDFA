@@ -20,11 +20,9 @@ public class Convert {
 	 * @return
 	 */
 	public StateMatrix toDFA(String text) {
-		StateMatrix stateMatrix = new StateMatrix();
 		String postfix = reToPostfix(text);
 		Map<String, Object> map = getFirstposAndFollowpos(postfix);
-//		stateMatrix.setMatrix(createStateMatrix(map));
-		createStateMatrix(map);
+		StateMatrix stateMatrix = createStateMatrix(map);
 		return stateMatrix;
 	}
 
@@ -341,13 +339,13 @@ public class Convert {
 	}
 
 	/**
-	 * 创建状态矩阵表
+	 * 创建状态矩阵
 	 * 
 	 * @param map
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public int[][] createStateMatrix(Map<String, Object> map) {
+	public StateMatrix createStateMatrix(Map<String, Object> map) {
 		Map<Integer, Character> labelMap = (Map<Integer, Character>) map.get("label");
 		Set<Character> set = new HashSet<Character>();
 		for (Character ch : labelMap.values()) { // 获取不重复的字符集
@@ -355,7 +353,7 @@ public class Convert {
 				set.add(ch);
 			}
 		}
-
+		System.out.println(map);
 		List<Set<Integer>> stateList = new ArrayList<Set<Integer>>();
 		List<List<Object>> tran = new ArrayList<List<Object>>();
 		Map<Integer, Set<Integer>> followposMap = (Map<Integer, Set<Integer>>) map.get("followpos");
@@ -371,10 +369,10 @@ public class Convert {
 						tmpSet.addAll(followposMap.get(i));
 					}
 				}
-				if(!tmpSet.isEmpty()) {
+				if (!tmpSet.isEmpty()) {
 					int eq = 0;
-					for(Set<Integer> set1 : stateList) {
-						if(isSetEqual(set1, tmpSet)) {
+					for (Set<Integer> set1 : stateList) {
+						if (isSetEqual(set1, tmpSet)) {
 							eq = 1;
 							break;
 						}
@@ -391,7 +389,37 @@ public class Convert {
 			}
 		}
 		System.out.println(tran);
-		return null;
+		List<Character> labelList = new ArrayList<Character>();
+		labelList.addAll(set);
+		int[][] intMatrix = new int[stateList.size()][set.size() + 1];
+		for(int i = 0; i < stateList.size(); i++) {
+			for(int j = 0; j < set.size() + 1; j++) {
+				intMatrix[i][j] = -1;
+			}
+		}
+		Set<Integer> state = new HashSet<Integer>();
+		int i = -1, j = 0;
+		for (List<Object> rela : tran) {
+			if(!isSetEqual(state, (Set<Integer>) rela.get(0))) {
+				j = 0;
+				i++;
+				intMatrix[i][j] = stateList.indexOf(rela.get(0));
+			}
+			j = 1 + labelList.indexOf(rela.get(1));
+			intMatrix[i][j] = stateList.indexOf(rela.get(2));
+			state = (Set<Integer>) rela.get(0);
+		}
+		StateMatrix stateMatrix = new StateMatrix();
+		stateMatrix.setMatrix(intMatrix);
+		char[] labelArray = new char[labelList.size() + 1];
+		labelArray[0] = ' ';
+		int i2 = 1;
+		for(char ch : labelList) {
+			labelArray[i2] = ch;
+			i2++;
+		}
+		stateMatrix.setInCh(labelArray);
+		return stateMatrix;
 	}
 
 	private boolean isSetEqual(@SuppressWarnings("rawtypes") Set set1, @SuppressWarnings("rawtypes") Set set2) {

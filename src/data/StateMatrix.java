@@ -2,7 +2,9 @@ package data;
 
 public class StateMatrix {
 	
-	private int[][] matrix = new int[][]{
+	private int[][] matrix = null;
+	private char[] inCh = null;
+//			new int[][]{
 //		{0,1,2},
 //		{1,3,2},
 //		{2,1,5},
@@ -11,15 +13,16 @@ public class StateMatrix {
 //		{5,6,5},
 //		{6,3,4}
 		
-		{0,1,2,3},
-		{1,1,5,-1},
-		{2,5,-1,-1},
-		{3,1,-1,4},
-		{4,-1,5,-1},
-		{5,-1,6,-1},
-		{6,6,-1,-1}
-	};
-	private char[] inCh = new char[]{' ','a','b','c'};
+//		{0,1,2,3},
+//		{1,1,5,-1},
+//		{2,5,-1,-1},
+//		{3,1,-1,4},
+//		{4,-1,5,-1},
+//		{5,-1,6,-1},
+//		{6,6,-1,-1}
+//	};
+//	private char[] inCh = null;
+//			new char[]{' ','a','b','c'};
 	
 	public int[][] getMatrix() {
 		return matrix;
@@ -33,8 +36,8 @@ public class StateMatrix {
 		return inCh;
 	}
 	
-	public void setInCh(char[] inCh) {
-		this.inCh = inCh;
+	public void setInCh(char[] labelArray) {
+		this.inCh = labelArray;
 	}
 	
 	public int stateTotal() {
