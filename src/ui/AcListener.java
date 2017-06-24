@@ -4,12 +4,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.EmptyStackException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import core.Convert;
 
 /**
  * 按钮动作监听类
@@ -48,11 +51,29 @@ public class AcListener implements ActionListener {
 				tabPanel1.setViewportView(msg1);
 				tabPanel2.setViewportView(msg2);
 			} else {
-				Graph graph = new Graph(text.getText().trim());  // 绘制状态转换图
-				tabPanel1.setViewportView(graph);
-				
-				Matrix matrix = new Matrix(text.getText().trim());  // 绘制状态转换图
-				tabPanel2.setViewportView(matrix);
+				try {
+					Convert convert = new Convert();
+					convert.createTree(convert.reToPostfix(text.getText().trim()));
+					
+					Graph graph = new Graph(text.getText().trim());  // 绘制状态转换图
+					tabPanel1.setViewportView(graph);
+					
+					Matrix matrix = new Matrix(text.getText().trim());  // 绘制状态转换图
+					tabPanel2.setViewportView(matrix);
+				} catch(EmptyStackException ex) {
+					JLabel msg1 = new JLabel("正则表达式输入有误，请检查后重新输入");
+					msg1.setFont(new Font("宋体", Font.BOLD, 16));
+					JLabel msg2 = new JLabel("正则表达式输入有误，请检查后重新输入");
+					msg2.setFont(new Font("宋体", Font.BOLD, 16));
+					msg1.setPreferredSize(new Dimension(690, 380));
+					msg1.setVerticalAlignment(SwingConstants.CENTER);
+					msg1.setHorizontalAlignment(SwingConstants.CENTER);
+					msg2.setPreferredSize(new Dimension(690, 380));
+					msg2.setVerticalAlignment(SwingConstants.CENTER);
+					msg2.setHorizontalAlignment(SwingConstants.CENTER);
+					tabPanel1.setViewportView(msg1);
+					tabPanel2.setViewportView(msg2);
+				}
 			}
 		}
 	}

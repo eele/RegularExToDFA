@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +20,7 @@ public class Convert {
 	 * @param text
 	 * @return
 	 */
-	public StateMatrix toDFA(String text) {
+	public StateMatrix toDFA(String text) throws EmptyStackException {
 		String postfix = reToPostfix(text);
 		Map<String, Object> map = getFirstposAndFollowpos(postfix);
 		StateMatrix stateMatrix = createStateMatrix(map);
@@ -32,7 +33,7 @@ public class Convert {
 	 * @param text
 	 * @return
 	 */
-	private String reToPostfix(String text) {
+	public String reToPostfix(String text) throws EmptyStackException {
 		int i = 0;
 		char c, pc;
 		StringBuilder sb = new StringBuilder(text);
@@ -339,7 +340,7 @@ public class Convert {
 	 * @param postfix
 	 * @return
 	 */
-	private int[][] createTree(String postfix) {
+	public int[][] createTree(String postfix) throws EmptyStackException {
 		Stack<Integer> st = new Stack<Integer>();
 		int[][] tree = new int[postfix.length()][2];
 		for (int i = 0; i < postfix.length(); i++) { // 初始化语法树
