@@ -29,7 +29,6 @@ public class Graph extends JPanel {
 
 	public Graph(String text) {
 		// TODO Auto-generated constructor stub
-		this.setPreferredSize(new Dimension(710, 450));
 		this.setBackground(Color.white);
 		this.text = text;
 	}
@@ -39,13 +38,6 @@ public class Graph extends JPanel {
 
 		List<List<Integer>> coordList = paintTotalStates(g);
 		paintTotalLinkedArrows(g, coordList);
-//		paintArrow(g,true,
-//				coordList.get(1).get(1),
-//				coordList.get(1).get(2),
-//				coordList.get(2).get(1),
-//				coordList.get(2).get(2),
-//				"a"
-//				);
 	}
 
 	/**
@@ -72,26 +64,91 @@ public class Graph extends JPanel {
 	 * @param label
 	 */
 	private void paintArrow(Graphics g, int x1, int y1, int x2, int y2, String label) {
+		Graphics2D g2d = (Graphics2D) g;
 		int angle1 = (int) (Math.atan(((double)(y1 - y2)) / ((double)(x2 - x1))) * 180 / Math.PI);
-		int angle2 = angle1;
-		if (x2 >= x1) {
+		int angle2 = angle1, angle = angle1;
+		
+		if(Math.abs(angle) == 90) {
 			angle2 += 180;
 			angle1 -= 28;
 			angle2 += 28;
+		} else  if(Math.abs(angle) == 0 || Math.abs(angle) == 180) {
+			if(x1 < x2) {
+				angle2 += 180;
+				angle1 -= 26;
+				angle2 += 26;
+			} else {
+				angle1 += 180;
+				angle1 -= 26;
+				angle2 += 26;
+			}
 		} else {
-			angle1 += 180;
-			angle1 += 28;
-			angle2 -= 28;
+			if (x2 >= x1) {
+				angle2 += 180;
+				angle1 += 28;
+				angle2 -= 28;
+			} else {
+				angle1 += 180;
+				angle1 += 28;
+				angle2 -= 28;
+			}
 		}
 		
 		int xl1 = (int)(x1 + 18 + Math.cos(((double)angle1) / 180 * Math.PI) * 18);
 		int yl1 = (int)(y1 + 18 - Math.sin(((double)angle1) / 180 * Math.PI) * 18);
 		int xl2 = (int)(x2 + 18 + Math.cos(((double)angle2) / 180 * Math.PI) * 18);
 		int yl2 = (int)(y2 + 18 - Math.sin(((double)angle2) / 180 * Math.PI) * 18);
-		Graphics2D g2d = (Graphics2D) g;
+		int ux1 = 0, uy1 = 0, ux2 = 0, uy2 = 0;
+		
+		if(Math.abs(angle) == 90) {
+			if(y1 < y2) {
+				ux1 = -16;
+				uy1 = -Math.abs(yl2 - yl1) / 10;
+				ux2 = -16;
+				uy2 = Math.abs(yl2 - yl1) / 10;
+				g2d.drawString(label, xl1 - 23, (yl1 + yl2) / 2);  // 显示标签
+			} else {
+				ux1 = 16;
+				uy1 = -Math.abs(yl2 - yl1) / 10;
+				ux2 = 16;
+				uy2 = Math.abs(yl2 - yl1) / 10;
+				g2d.drawString(label, xl1 + 14, (yl1 + yl2) / 2);  // 显示标签
+			}
+		} else if(Math.abs(angle) == 0 || Math.abs(angle) == 180) {
+			if(x1 > x2) {
+				ux1 = -Math.abs(xl2 - xl1) / 10;
+				uy1 = -(Math.abs(xl2 - xl1) / 8 + 5);
+				ux2 = Math.abs(xl2 - xl1) / 10;
+				uy2 = -(Math.abs(xl2 - xl1) / 8 + 5);
+				g2d.drawString(label, (xl1 + xl2) / 2, yl1 - (Math.abs(xl2 - xl1) / 8));  // 显示标签
+			} else {
+				ux1 = -Math.abs(xl2 - xl1) / 5;
+				uy1 = (Math.abs(xl2 - xl1) / 8 + 5);
+				ux2 = Math.abs(xl2 - xl1) / 5;
+				uy2 = (Math.abs(xl2 - xl1) / 8 + 5);
+				g2d.drawString(label, (xl1 + xl2) / 2, yl1 + (Math.abs(xl2 - xl1) / 8 + 16));  // 显示标签
+			}
+		} else {
+			if(x1 < x2) {
+				uy1 = -(Math.abs(xl2 - xl1) / 8 + 5);
+				uy2 = -(Math.abs(xl2 - xl1) / 8 + 5);
+			} else {
+				uy1 = (Math.abs(xl2 - xl1) / 8 + 5);
+				uy2 = (Math.abs(xl2 - xl1) / 8 + 5);
+			}
+			if(y1 > y2) {
+				ux1 = -(Math.abs(yl2 - yl1) / 8 + 5);
+				ux2 = -(Math.abs(yl2 - yl1) / 8 + 5);
+			} else {
+				ux1 = (Math.abs(yl2 - yl1) / 8 + 5);
+				ux2 = (Math.abs(yl2 - yl1) / 8 + 5);
+			}
+			g2d.drawString(label, (xl1 + xl2) / 2 + ux1, (yl1 + yl2) / 2 + uy1);  // 显示标签
+		}
+		
 		GeneralPath path = new GeneralPath();
 		path.moveTo(xl1, yl1);
-		path.curveTo((xl1 + xl2) / 2 - 20, (yl1 + yl2) / 2 + Math.abs(xl2 - xl1) / 5, (xl1 + xl2) / 2 + 20, (yl1 + yl2) / 2 + Math.abs(xl2 - xl1) / 5, xl2, yl2);
+		path.curveTo((xl1 + xl2) / 2 + ux1, (yl1 + yl2) / 2 + uy1, (xl1 + xl2) / 2 + ux2, (yl1 + yl2) / 2 + uy2, xl2, yl2);
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.draw(path);
 		
@@ -102,9 +159,6 @@ public class Graph extends JPanel {
 		g2d.fillPolygon(xs, ys, 3); // 实心箭头
 		g2d.rotate((270 + angle2) * Math.PI / 180); // 恢复旋转角度和原点位置
 		g2d.translate(-xl2, -yl2);
-		
-		g2d.drawString(label, (xl1 + xl2) / 2 + 3, (yl1 + yl2) / 2 - 5);  // 显示标签
-		
 	}
 
 	/**
@@ -142,7 +196,7 @@ public class Graph extends JPanel {
 	private List<List<Integer>> paintTotalStates(Graphics g) {
 		List<List<Integer>> layerList = new ArrayList<List<Integer>>();
 		Convert convert = new Convert();
-		StateMatrix stateMatrix = convert.toDFA(text);
+		StateMatrix stateMatrix = convert.toDFA(text);  // 通过转换获取DFA状态矩阵
 
 		List<Integer> stateList = new ArrayList<Integer>();
 		stateList.add(0);
@@ -177,12 +231,14 @@ public class Graph extends JPanel {
 			}
 		}
 		
+		this.setPreferredSize(new Dimension(layerList.size() * 110, max * 110));
+		
 		List<List<Integer>> coordList = new ArrayList<List<Integer>>(); // 坐标列表
-		paintState(g, "0", 60, max / 2 * 110 + 30);  // 绘制0号状态结点
+		paintState(g, "0", 60, max / 2 * 110 + 100);  // 绘制0号状态结点
 		List<Integer> coord = new ArrayList<Integer>();
 		coord.add(0);
 		coord.add(60);
-		coord.add(max / 2 * 110 + 30);
+		coord.add(max / 2 * 110 + 100);
 		coordList.add(coord);
 		int layerNum = 1;
 		for(List<Integer> st: layerList) {  // 绘制各状态结点
@@ -191,11 +247,11 @@ public class Graph extends JPanel {
 				if(stateNum == 0) {
 					continue;
 				}
-				paintState(g, String.valueOf(stateNum), 110 * layerNum - 40, n * 110 + 30);
+				paintState(g, String.valueOf(stateNum), 110 * layerNum - 40, n * 110 + 100);
 				coord = new ArrayList<Integer>();
 				coord.add(stateNum);
 				coord.add(110 * layerNum - 40);
-				coord.add(n * 110 + 30);
+				coord.add(n * 110 + 100);
 				coordList.add(coord);
 				n++;
 			}
@@ -213,7 +269,7 @@ public class Graph extends JPanel {
 	private List<List<Map<String, Object>>> paintTotalLinkedArrows(Graphics g, List<List<Integer>> coordList) {
 		List<List<Map<String, Object>>> arrowList = new ArrayList<List<Map<String, Object>>>();
 		Convert convert = new Convert();
-		StateMatrix stateMatrix = convert.toDFA(text);
+		StateMatrix stateMatrix = convert.toDFA(text);  // 通过转换获取DFA状态矩阵
 		
 		int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 		for(int state = 0; state < stateMatrix.stateTotal(); state++) {
@@ -221,7 +277,7 @@ public class Graph extends JPanel {
 				if(stateMatrix.getMatrix()[state][0] != stateMatrix.getMatrix()[state][p] && stateMatrix.getMatrix()[state][p] != -1) {
 					int i;
 					for(i = 0; i < coordList.size(); i++) {
-						if(coordList.get(i).get(0) == state) {
+						if(coordList.get(i).get(0) == stateMatrix.getMatrix()[state][0]) {
 							break;
 						}
 					}
@@ -234,12 +290,12 @@ public class Graph extends JPanel {
 					}
 					x2 = coordList.get(i).get(1);
 					y2 = coordList.get(i).get(2);
-					paintArrow(g, x1, y1, x2, y2, stateMatrix.getInCh()[p] + "");  // 绘制直线箭头
+					paintArrow(g, x1, y1, x2, y2, stateMatrix.getInCh()[p] + "");  // 绘制连接箭头
 				} else {
 					if(stateMatrix.getMatrix()[state][p] != -1) {
 						int i;
 						for(i = 0; i < coordList.size(); i++) {
-							if(coordList.get(i).get(0) == state) {
+							if(coordList.get(i).get(0) == stateMatrix.getMatrix()[state][0]) {
 								break;
 							}
 						}

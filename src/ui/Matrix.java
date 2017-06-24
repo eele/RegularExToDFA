@@ -16,7 +16,6 @@ public class Matrix extends JPanel {
 	
 	public Matrix(String text) {
 		// TODO Auto-generated constructor stub
-		this.setPreferredSize(new Dimension(710, 450));
 		this.setBackground(Color.white);
 		this.text = text;
 	}
@@ -39,5 +38,6 @@ public class Matrix extends JPanel {
 				}
 			}
 		}
+		this.setPreferredSize(new Dimension(stateMatrix.getMatrix()[0].length * 80 +20, stateMatrix.stateTotal() * 35 + 30));
 	}
 }

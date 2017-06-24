@@ -4,25 +4,6 @@ public class StateMatrix {
 	
 	private int[][] matrix = null;
 	private char[] inCh = null;
-//			new int[][]{
-//		{0,1,2},
-//		{1,3,2},
-//		{2,1,5},
-//		{3,3,4},
-//		{4,6,5},
-//		{5,6,5},
-//		{6,3,4}
-		
-//		{0,1,2,3},
-//		{1,1,5,-1},
-//		{2,5,-1,-1},
-//		{3,1,-1,4},
-//		{4,-1,5,-1},
-//		{5,-1,6,-1},
-//		{6,6,-1,-1}
-//	};
-//	private char[] inCh = null;
-//			new char[]{' ','a','b','c'};
 	
 	public int[][] getMatrix() {
 		return matrix;

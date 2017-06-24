@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -21,8 +22,8 @@ public class MainUI {
 
 	private static JButton button = null; // 转换按钮
 	private static JTextField text = null; // 输入框
-	private static JPanel tabPanel1 = null; // DFA状态转换图面板
-	private static JPanel tabPanel2 = null; // DFA状态转换矩阵面板
+	private static JScrollPane tabPanel1 = null; // DFA状态转换图面板
+	private static JScrollPane tabPanel2 = null; // DFA状态转换矩阵面板
 
 	public static void main(String args[]) {
 		setUI();
@@ -43,7 +44,7 @@ public class MainUI {
 		blank.setPreferredSize(new Dimension(680, 20));
 		JLabel label = new JLabel("   正则表达式： "); // 标签
 		label.setFont(new Font("宋体", Font.BOLD, 15));
-		text = new JTextField("a"); // 输入框
+		text = new JTextField(); // 输入框
 		text.setFont(new Font("宋体", Font.ROMAN_BASELINE, 15));
 		text.setPreferredSize(new Dimension(430, 30));
 		button = new JButton("转换"); // 转换按钮
@@ -55,20 +56,20 @@ public class MainUI {
 		JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP); // 选项卡
 		tabPane.setFont(new Font("宋体", Font.BOLD, 13));
 		
-		tabPanel1 = new JPanel();
-		tabPanel2 = new JPanel();
+		tabPanel1 = new JScrollPane();
+		tabPanel2 = new JScrollPane();
 		JLabel msg1 = new JLabel("请输入正则表达式 ");
 		msg1.setFont(new Font("宋体", Font.BOLD, 16));
 		JLabel msg2 = new JLabel("请输入正则表达式 ");
 		msg2.setFont(new Font("宋体", Font.BOLD, 16));
-		msg1.setPreferredSize(new Dimension(710, 380));
+		msg1.setPreferredSize(new Dimension(690, 380));
 		msg1.setVerticalAlignment(SwingConstants.CENTER);
 		msg1.setHorizontalAlignment(SwingConstants.CENTER);
-		msg2.setPreferredSize(new Dimension(710, 380));
+		msg2.setPreferredSize(new Dimension(690, 380));
 		msg2.setVerticalAlignment(SwingConstants.CENTER);
 		msg2.setHorizontalAlignment(SwingConstants.CENTER);
-		tabPanel1.add(msg1);
-		tabPanel2.add(msg2);
+		tabPanel1.setViewportView(msg1);
+		tabPanel2.setViewportView(msg2);
 		
 		tabPane.addTab("DFA状态转换图", tabPanel1);
 		tabPane.addTab("DFA状态转换矩阵", tabPanel2);
