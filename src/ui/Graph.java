@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class Graph extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private String text = null;
+	private List<Point> labebCoordList = new ArrayList<Point>();
 
 	public Graph(String text) {
 		// TODO Auto-generated constructor stub
@@ -35,7 +37,8 @@ public class Graph extends JPanel {
 
 	public void paint(Graphics g) {
 		super.paint(g);
-
+		
+		labebCoordList.clear();
 		List<List<Integer>> coordList = paintTotalStates(g);
 		paintTotalLinkedArrows(g, coordList);
 	}
@@ -106,13 +109,47 @@ public class Graph extends JPanel {
 				uy1 = -Math.abs(yl2 - yl1) / 10;
 				ux2 = -16;
 				uy2 = Math.abs(yl2 - yl1) / 10;
-				g2d.drawString(label, xl1 - 23, (yl1 + yl2) / 2);  // 显示标签
+				Point p = new Point(xl1 - 23, (yl1 + yl2) / 2 - 6);
+				int eq = 0;
+				for(Point pi : labebCoordList) {
+					if(pi.equals(p)) {
+						eq = 1;
+					}
+				}
+				while (eq == 1) {
+					eq = 0;
+					p.setLocation(xl1 - 23, p.getY() + 11);
+					for(Point pi : labebCoordList) {
+						if(pi.equals(p)) {
+							eq = 1;
+						}
+					}
+				}
+				labebCoordList.add(p);
+				g2d.drawString(label, (int) p.getX(), (int) p.getY());  // 显示标签
 			} else {
 				ux1 = 16;
 				uy1 = -Math.abs(yl2 - yl1) / 10;
 				ux2 = 16;
 				uy2 = Math.abs(yl2 - yl1) / 10;
-				g2d.drawString(label, xl1 + 14, (yl1 + yl2) / 2);  // 显示标签
+				Point p = new Point(xl1 + 14, (yl1 + yl2) / 2 - 6);
+				int eq = 0;
+				for(Point pi : labebCoordList) {
+					if(pi.equals(p)) {
+						eq = 1;
+					}
+				}
+				while (eq == 1) {
+					eq = 0;
+					p.setLocation(xl1 + 14, p.getY() + 11);
+					for(Point pi : labebCoordList) {
+						if(pi.equals(p)) {
+							eq = 1;
+						}
+					}
+				}
+				labebCoordList.add(p);
+				g2d.drawString(label, (int) p.getX(), (int) p.getY());  // 显示标签
 			}
 		} else if(Math.abs(angle) == 0 || Math.abs(angle) == 180) {
 			if(x1 > x2) {
@@ -120,13 +157,47 @@ public class Graph extends JPanel {
 				uy1 = -(Math.abs(xl2 - xl1) / 8 + 5);
 				ux2 = Math.abs(xl2 - xl1) / 10;
 				uy2 = -(Math.abs(xl2 - xl1) / 8 + 5);
-				g2d.drawString(label, (xl1 + xl2) / 2, yl1 - (Math.abs(xl2 - xl1) / 8));  // 显示标签
+				Point p = new Point((xl1 + xl2) / 2 - 9, yl1 - (Math.abs(xl2 - xl1) / 8));
+				int eq = 0;
+				for(Point pi : labebCoordList) {
+					if(pi.equals(p)) {
+						eq = 1;
+					}
+				}
+				while (eq == 1) {
+					eq = 0;
+					p.setLocation(p.getX() + 11, yl1 - (Math.abs(xl2 - xl1) / 8));
+					for(Point pi : labebCoordList) {
+						if(pi.equals(p)) {
+							eq = 1;
+						}
+					}
+				}
+				labebCoordList.add(p);
+				g2d.drawString(label, (int) p.getX(), (int) p.getY());  // 显示标签
 			} else {
 				ux1 = -Math.abs(xl2 - xl1) / 5;
 				uy1 = (Math.abs(xl2 - xl1) / 8 + 5);
 				ux2 = Math.abs(xl2 - xl1) / 5;
 				uy2 = (Math.abs(xl2 - xl1) / 8 + 5);
-				g2d.drawString(label, (xl1 + xl2) / 2, yl1 + (Math.abs(xl2 - xl1) / 8 + 16));  // 显示标签
+				Point p = new Point((xl1 + xl2) / 2 - 9, yl1 + (Math.abs(xl2 - xl1) / 8 + 16));
+				int eq = 0;
+				for(Point pi : labebCoordList) {
+					if(pi.equals(p)) {
+						eq = 1;
+					}
+				}
+				while (eq == 1) {
+					eq = 0;
+					p.setLocation(p.getX() + 11, yl1 - (Math.abs(xl2 - xl1) / 8 + 16));
+					for(Point pi : labebCoordList) {
+						if(pi.equals(p)) {
+							eq = 1;
+						}
+					}
+				}
+				labebCoordList.add(p);
+				g2d.drawString(label, (int) p.getX(), (int) p.getY());  // 显示标签
 			}
 		} else {
 			if(x1 < x2) {
@@ -143,6 +214,24 @@ public class Graph extends JPanel {
 				ux1 = (Math.abs(yl2 - yl1) / 8 + 5);
 				ux2 = (Math.abs(yl2 - yl1) / 8 + 5);
 			}
+			Point p = new Point((xl1 + xl2) / 2 + ux1, (yl1 + yl2) / 2 + uy1);
+			int eq = 0;
+			for(Point pi : labebCoordList) {
+				if(pi.equals(p)) {
+					eq = 1;
+				}
+			}
+			while (eq == 1) {
+				eq = 0;
+				p.setLocation((xl1 + xl2) / 2 + ux1, p.getY() - 11);
+				for(Point pi : labebCoordList) {
+					if(pi.equals(p)) {
+						eq = 1;
+					}
+				}
+			}
+			labebCoordList.add(p);
+			g2d.drawString(label, (int) p.getX(), (int) p.getY());  // 显示标签
 			g2d.drawString(label, (xl1 + xl2) / 2 + ux1, (yl1 + yl2) / 2 + uy1);  // 显示标签
 		}
 		
@@ -174,8 +263,24 @@ public class Graph extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.translate(x + 18, y + 18); // 原点位置
 
-		g2d.drawString(label, (int) (Math.sin(angle * Math.PI / 180) * 60),
-				(int) (-Math.cos(angle * Math.PI / 180) * 60));
+		Point p = new Point((int) (Math.sin(angle * Math.PI / 180) * 60 - 9), (int) (-Math.cos(angle * Math.PI / 180) * 60));
+		int eq = 0;
+		for(Point pi : labebCoordList) {
+			if(pi.equals(p)) {
+				eq = 1;
+			}
+		}
+		while (eq == 1) {
+			eq = 0;
+			p.setLocation(p.getX() + 11, (int) (-Math.cos(angle * Math.PI / 180) * 60));
+			for(Point pi : labebCoordList) {
+				if(pi.equals(p)) {
+					eq = 1;
+				}
+			}
+		}
+		labebCoordList.add(p);
+		g2d.drawString(label, (int) p.getX(), (int) p.getY());  // 显示标签
 
 		g2d.rotate(angle * Math.PI / 180);
 		g2d.drawArc(-11, -46, 20, 35, -45, 180 + 90); // 圆弧
