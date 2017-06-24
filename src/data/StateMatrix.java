@@ -41,10 +41,11 @@ public class StateMatrix {
 	}
 	
 	public int stateTotal() {
-		int length = 0;
+		int length = 0, state = -1;
 		for(int i = 0; i < matrix.length; i++) {
-			if(matrix[i][0] != -1) {
+			if(matrix[i][0] != -1 && matrix[i][0] > state) {
 				length++;
+				state = matrix[i][0];
 			}
 		}
 		return length;

@@ -449,7 +449,6 @@ public class Convert {
 			state = (Set<Integer>) rela.get(0);
 		}
 		
-		System.out.println(stateList);
 		StateMatrix stateMatrix = new StateMatrix();
 		stateMatrix.setMatrix(intMatrix);
 		char[] labelArray = new char[labelList.size() + 1];

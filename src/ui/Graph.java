@@ -152,7 +152,9 @@ public class Graph extends JPanel {
 			hArray[i] = 0;
 		}
 		int count = 0, state = 0, layer = 0; // 当前加入的状态数、上一层的各状态编号、上一层编号
-		while (count < stateMatrix.stateTotal() - 1) {  // 生成状态结点的层次排列
+		int count2 = -1;
+		while (count != count2) {  // 生成状态结点的层次排列
+			count2 = count;
 			stateList = new ArrayList<Integer>();
 			for (int i = 0; i < layerList.get(layer).size(); i++) {
 				state = layerList.get(layer).get(i);
