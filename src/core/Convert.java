@@ -100,7 +100,7 @@ public class Convert {
 	}
 
 	/**
-	 * 检查字符是否为运算符
+	 * 检查字符是否为操作符
 	 * @param c
 	 * @return
 	 */
@@ -118,6 +118,12 @@ public class Convert {
 		}
 	}
 
+	/**
+	 * 比较操作符编号
+	 * @param t1
+	 * @param t2
+	 * @return
+	 */
 	private boolean Operator_Less_Than(char t1, char t2) {
 		int temp1 = getOperatorNumber(t1);
 		int temp2 = getOperatorNumber(t2);
@@ -126,6 +132,11 @@ public class Convert {
 		return false;
 	}
 
+	/**
+	 * 获取操作符编号
+	 * @param t1
+	 * @return
+	 */
 	private int getOperatorNumber(char t1) {
 		switch (t1) {
 		case '$':
