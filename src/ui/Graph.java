@@ -242,7 +242,6 @@ public class Graph extends JPanel {
 			}
 			labebCoordList.add(p);
 			g2d.drawString(label, (int) p.getX(), (int) p.getY());  // 显示标签
-			g2d.drawString(label, (xl1 + xl2) / 2 + ux1, (yl1 + yl2) / 2 + uy1);  // 显示标签
 		}
 		
 		GeneralPath path = new GeneralPath();
