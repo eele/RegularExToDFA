@@ -18,6 +18,11 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
+/**
+ * 主界面类
+ * @author ele
+ *
+ */
 public class MainUI {
 
 	private static JButton button = null; // 转换按钮
@@ -30,6 +35,9 @@ public class MainUI {
 		setButtonAction();
 	}
 
+	/**
+	 * 创建UI图形界面
+	 */
 	private static void setUI() {
 		JFrame frame = new JFrame("正规表达式到DFA转化工具");
 		frame.setSize(710, 580); // 设置组件的大小
@@ -42,7 +50,7 @@ public class MainUI {
 		hPanel.setPreferredSize(new Dimension(710, 80));
 		JLabel blank = new JLabel(); // 顶部空白处
 		blank.setPreferredSize(new Dimension(680, 20));
-		JLabel label = new JLabel("   正则表达式： "); // 标签
+		JLabel label = new JLabel("   正规表达式： "); // 标签
 		label.setFont(new Font("宋体", Font.BOLD, 15));
 		text = new JTextField(); // 输入框
 		text.setFont(new Font("宋体", Font.ROMAN_BASELINE, 15));
@@ -58,9 +66,9 @@ public class MainUI {
 		
 		tabPanel1 = new JScrollPane();
 		tabPanel2 = new JScrollPane();
-		JLabel msg1 = new JLabel("请输入正则表达式 ");
+		JLabel msg1 = new JLabel("请输入正规表达式 ");
 		msg1.setFont(new Font("宋体", Font.BOLD, 16));
-		JLabel msg2 = new JLabel("请输入正则表达式 ");
+		JLabel msg2 = new JLabel("请输入正规表达式 ");
 		msg2.setFont(new Font("宋体", Font.BOLD, 16));
 		msg1.setPreferredSize(new Dimension(690, 380));
 		msg1.setVerticalAlignment(SwingConstants.CENTER);
@@ -83,6 +91,9 @@ public class MainUI {
 		frame.setVisible(true); // 让组件可见
 	}
 
+	/**
+	 * 绑定转换按钮的动作事件
+	 */
 	private static void setButtonAction() {
 		AcListener acListener = new AcListener(button, text, tabPanel1, tabPanel2);
 		button.addActionListener(acListener);  // 添加转换按钮动作

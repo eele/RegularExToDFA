@@ -10,15 +10,13 @@ import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import javax.swing.JPanel;
 
 import core.Convert;
 import data.StateMatrix;
 
 /**
- * 状态转换图类
+ * 状态转换图显示类
  * 
  * @author ele
  *
@@ -28,6 +26,7 @@ public class Graph extends JPanel {
 	
 	private String text = null;
 	private List<Point> labebCoordList = new ArrayList<Point>();
+	private List<List<Integer>> loopCoordList = new ArrayList<List<Integer>>();
 
 	public Graph(String text) {
 		// TODO Auto-generated constructor stub
@@ -39,6 +38,7 @@ public class Graph extends JPanel {
 		super.paint(g);
 		
 		labebCoordList.clear();
+		loopCoordList.clear();
 		List<List<Integer>> coordList = paintTotalStates(g);
 		paintTotalLinkedArrows(g, coordList);
 	}
@@ -114,6 +114,7 @@ public class Graph extends JPanel {
 				for(Point pi : labebCoordList) {
 					if(pi.equals(p)) {
 						eq = 1;
+						break;
 					}
 				}
 				while (eq == 1) {
@@ -122,6 +123,7 @@ public class Graph extends JPanel {
 					for(Point pi : labebCoordList) {
 						if(pi.equals(p)) {
 							eq = 1;
+							break;
 						}
 					}
 				}
@@ -137,6 +139,7 @@ public class Graph extends JPanel {
 				for(Point pi : labebCoordList) {
 					if(pi.equals(p)) {
 						eq = 1;
+						break;
 					}
 				}
 				while (eq == 1) {
@@ -145,6 +148,7 @@ public class Graph extends JPanel {
 					for(Point pi : labebCoordList) {
 						if(pi.equals(p)) {
 							eq = 1;
+							break;
 						}
 					}
 				}
@@ -162,6 +166,7 @@ public class Graph extends JPanel {
 				for(Point pi : labebCoordList) {
 					if(pi.equals(p)) {
 						eq = 1;
+						break;
 					}
 				}
 				while (eq == 1) {
@@ -170,6 +175,7 @@ public class Graph extends JPanel {
 					for(Point pi : labebCoordList) {
 						if(pi.equals(p)) {
 							eq = 1;
+							break;
 						}
 					}
 				}
@@ -185,6 +191,7 @@ public class Graph extends JPanel {
 				for(Point pi : labebCoordList) {
 					if(pi.equals(p)) {
 						eq = 1;
+						break;
 					}
 				}
 				while (eq == 1) {
@@ -193,6 +200,7 @@ public class Graph extends JPanel {
 					for(Point pi : labebCoordList) {
 						if(pi.equals(p)) {
 							eq = 1;
+							break;
 						}
 					}
 				}
@@ -219,6 +227,7 @@ public class Graph extends JPanel {
 			for(Point pi : labebCoordList) {
 				if(pi.equals(p)) {
 					eq = 1;
+					break;
 				}
 			}
 			while (eq == 1) {
@@ -227,6 +236,7 @@ public class Graph extends JPanel {
 				for(Point pi : labebCoordList) {
 					if(pi.equals(p)) {
 						eq = 1;
+						break;
 					}
 				}
 			}
@@ -263,24 +273,30 @@ public class Graph extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.translate(x + 18, y + 18); // 原点位置
 
-		Point p = new Point((int) (Math.sin(angle * Math.PI / 180) * 60 - 9), (int) (-Math.cos(angle * Math.PI / 180) * 60));
+		List<Integer> p = new ArrayList<Integer>();
+		p.add(x);
+		p.add(y);
+		p.add(1);
 		int eq = 0;
-		for(Point pi : labebCoordList) {
-			if(pi.equals(p)) {
-				eq = 1;
+		int i = 0;
+		for(List<Integer> pi : loopCoordList) {
+			if(pi.get(0).equals(p.get(0)) && pi.get(1).equals(p.get(1))) {
+				eq = pi.get(2);
+				break;
 			}
+			i++;
 		}
-		while (eq == 1) {
-			eq = 0;
-			p.setLocation(p.getX() + 11, (int) (-Math.cos(angle * Math.PI / 180) * 60));
-			for(Point pi : labebCoordList) {
-				if(pi.equals(p)) {
-					eq = 1;
-				}
-			}
+		if(eq == 0) {
+			loopCoordList.add(p);
+		} else {
+			loopCoordList.get(i).set(2, loopCoordList.get(i).get(2) + 1);
 		}
-		labebCoordList.add(p);
-		g2d.drawString(label, (int) p.getX(), (int) p.getY());  // 显示标签
+		int x2 = (int) (Math.sin(angle * Math.PI / 180) * 60 - 9);
+		while(eq > 0) {
+			x2 = x2 + 11;
+			eq--;
+		}
+		g2d.drawString(label, x2, (int) (-Math.cos(angle * Math.PI / 180) * 60));  // 显示标签
 
 		g2d.rotate(angle * Math.PI / 180);
 		g2d.drawArc(-11, -46, 20, 35, -45, 180 + 90); // 圆弧
@@ -369,10 +385,8 @@ public class Graph extends JPanel {
 	 * 绘制所有连接箭头
 	 * @param g
 	 * @param coordList
-	 * @return
 	 */
-	private List<List<Map<String, Object>>> paintTotalLinkedArrows(Graphics g, List<List<Integer>> coordList) {
-		List<List<Map<String, Object>>> arrowList = new ArrayList<List<Map<String, Object>>>();
+	private void paintTotalLinkedArrows(Graphics g, List<List<Integer>> coordList) {
 		Convert convert = new Convert();
 		StateMatrix stateMatrix = convert.toDFA(text);  // 通过转换获取DFA状态矩阵
 		
@@ -411,6 +425,5 @@ public class Graph extends JPanel {
 				}
 			}
 		}
-		return arrowList;
 	}
 }

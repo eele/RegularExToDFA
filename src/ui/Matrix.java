@@ -9,6 +9,11 @@ import javax.swing.JPanel;
 import core.Convert;
 import data.StateMatrix;
 
+/**
+ * 状态转换矩阵显示类
+ * @author ele
+ *
+ */
 public class Matrix extends JPanel {
 	private static final long serialVersionUID = 1L;
 
@@ -20,6 +25,9 @@ public class Matrix extends JPanel {
 		this.text = text;
 	}
 
+	/**
+	 * 绘制状态转换矩阵表
+	 */
 	public void paint(Graphics g) {
 		super.paint(g);
 		g.setFont(new Font("宋体", Font.BOLD, 18));

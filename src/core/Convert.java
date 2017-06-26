@@ -12,10 +12,15 @@ import java.util.Stack;
 
 import data.StateMatrix;
 
+/**
+ * 正规表达式到DFA的转换类
+ * @author ele
+ *
+ */
 public class Convert {
 
 	/**
-	 * 将正则表达式转为DFA
+	 * 将正规表达式转为DFA
 	 * 
 	 * @param text
 	 * @return
@@ -28,7 +33,7 @@ public class Convert {
 	}
 
 	/**
-	 * 正则表达式改为后缀表达式
+	 * 正规表达式改为后缀表达式
 	 * 
 	 * @param text
 	 * @return
@@ -94,6 +99,11 @@ public class Convert {
 		return postfix;
 	}
 
+	/**
+	 * 检查字符是否为运算符
+	 * @param c
+	 * @return
+	 */
 	private boolean isOperator(char c) {
 		switch (c) {
 		case '|':
@@ -138,7 +148,7 @@ public class Convert {
 	}
 
 	/**
-	 * 根据后缀表达式得到根节点的firstpos集合和各结点的followpos集合
+	 * 根据后缀表达式得到根节点的firstpos函数结果集合和各结点的followpos函数结果集合
 	 * 
 	 * @param postfix
 	 * @return
@@ -155,23 +165,26 @@ public class Convert {
 
 		int[][] tree = createTree(postfix); // 根据后缀表达式创建语法树
 
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++) {  // 初始化集合数组
 			for (int j = 0; j < length; j++) {
 				firstpos[i][j] = lastpos[i][j] = followpos[i][j] = 0;
 			}
 		}
-		for (int i = 0; i < length; i++) {
-			if (Isalpha(postfix.charAt(i)) || postfix.charAt(i) == '#') {
-				position[i] = pos;
+		for (int i = 0; i < length; i++) { // 求出各节点的nullable(n)、firstpos(n)、lastpos(n)、followpos(n)。nullable(n)
+			if (Isalpha(postfix.charAt(i)) || postfix.charAt(i) == '#') {  // 字母或终结符（语法树的叶子结点）
+				position[i] = pos;  // 为字母或终结符编号
 				pos++;
 				nullable[i] = false;
 				firstpos[i][0] = position[i];
 				lastpos[i][0] = position[i];
-			} else {
+			} else {  // 运算符（语法树的双亲结点）
 				position[i] = 0;// 运算符的position设为0
 				if (postfix.charAt(i) == '|') {
+					// nullable(i) = nullable(c1) or nullable(c2)
 					nullable[i] = (nullable[tree[i][0]] || nullable[tree[i][1]]);
 
+					// firstpos(i) = firstpos(c1) U firstpos(c2)
+					// lastpos(i) = lastpos (c1) U lastpos (c2)
 					int j = 0;
 					while (firstpos[tree[i][1]][j] != 0) {
 						firstpos[i][j] = firstpos[tree[i][1]][j];
@@ -196,16 +209,18 @@ public class Convert {
 				} else if (postfix.charAt(i) == '*') {
 					nullable[i] = true;
 
+					// firstpos(i) = firstpos(c1)
+					// lastpos(i) = lastpos (c1)
 					int j = 0;
 					while (firstpos[tree[i][0]][j] != 0) {
 						firstpos[i][j] = firstpos[tree[i][0]][j];
 						lastpos[i][j] = lastpos[tree[i][0]][j];
 						j++;
 					}
-				} else { // 连接符.
+				} else { // 连接符
 					nullable[i] = (nullable[tree[i][0]] && nullable[tree[i][1]]);
 
-					if (nullable[tree[i][0]] == true) {
+					if (nullable[tree[i][0]] == true) { // firstpos(i) = firstpos(c1) U firstpos(c2)
 						int j = 0;
 						int m;
 						while (firstpos[tree[i][1]][j] != 0) {
@@ -224,7 +239,7 @@ public class Convert {
 							}
 							k++;
 						}
-					} else {
+					} else { // firstpos(i) = firstpos(c1)
 						int j = 0;
 						while (firstpos[tree[i][0]][j] != 0) {
 							firstpos[i][j] = firstpos[tree[i][0]][j];
@@ -232,7 +247,7 @@ public class Convert {
 						}
 					}
 
-					if (nullable[tree[i][1]]) {
+					if (nullable[tree[i][1]]) { // lastpos(i) = lastpos (c1) U lastpos (c2)
 						int j = 0;
 						while (lastpos[tree[i][1]][j] != 0) {
 							lastpos[i][j] = lastpos[tree[i][1]][j];
@@ -251,7 +266,7 @@ public class Convert {
 							}
 							k++;
 						}
-					} else {
+					} else { // lastpos(i) = lastpos (c2)
 						int j = 0;
 						while (lastpos[tree[i][1]][j] != 0) {
 							lastpos[i][j] = lastpos[tree[i][1]][j];
@@ -272,17 +287,17 @@ public class Convert {
 		}
 		map.put("firstpos", firstposSet);
 
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++) { // 求出各节点的followpos(n)
 			if (postfix.charAt(i) == '&') {
 				int m = 0;
 				while (lastpos[tree[i][0]][m] != 0) {
 					int k;
-					for (k = 0; k < length; k++) {
+					for (k = 0; k < length; k++) {  // 寻找空余位置，以插入firstpos(c2)的结果集元素
 						if (followpos[lastpos[tree[i][0]][m]][k] == 0)
 							break;
 					}
 					int n = 0;
-					while (firstpos[tree[i][1]][n] != 0) {
+					while (firstpos[tree[i][1]][n] != 0) { // 对于lastpos(c1)中的所有位置i'，followpos(i') = firstpos(c2)
 						followpos[lastpos[tree[i][0]][m]][k] = firstpos[tree[i][1]][n];
 						n++;
 						k++;
@@ -294,12 +309,12 @@ public class Convert {
 				int m = 0;
 				while (lastpos[i][m] != 0) {
 					int n;
-					for (n = 0; n < length; n++) {
+					for (n = 0; n < length; n++) {  // 寻找空余位置，以插入firstpos(n)的结果集元素
 						if (followpos[lastpos[i][m]][n] == 0)
 							break;
 					}
 					int k = 0;
-					while (firstpos[i][k] != 0) {
+					while (firstpos[i][k] != 0) { // 对于lastpos(n)中的所有位置i'，followpos(i') = firstpos(n)
 						followpos[lastpos[i][m]][n] = firstpos[i][k];
 						k++;
 						n++;
@@ -373,6 +388,11 @@ public class Convert {
 		return tree;
 	}
 
+	/**
+	 * 检查字符是否为字母
+	 * @param c
+	 * @return
+	 */
 	private boolean Isalpha(char c) {
 		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 			return true;
@@ -381,7 +401,7 @@ public class Convert {
 	}
 
 	/**
-	 * 创建状态矩阵
+	 * 构造状态矩阵
 	 * 
 	 * @param map
 	 * @return
@@ -399,13 +419,13 @@ public class Convert {
 		List<List<Object>> tran = new ArrayList<List<Object>>();
 		Map<Integer, Set<Integer>> followposMap = (Map<Integer, Set<Integer>>) map.get("followpos");
 		Stack<Set<Integer>> stateStack = new Stack<Set<Integer>>();
-		stateStack.push((Set<Integer>) map.get("firstpos"));
+		stateStack.push((Set<Integer>) map.get("firstpos")); // 将firstpos(root)的结果集作为初始状态入栈
 		while (!stateStack.isEmpty()) {
 			Set<Integer> state = stateStack.pop();
-			stateList.add(state);
+			stateList.add(state); // 将栈顶状态state出栈并加入状态集中
 			for (Character ch : set) {
 				Set<Integer> tmpSet = new HashSet<Integer>();
-				for (int i : state) {
+				for (int i : state) { // 求state中和ch对应的所有位置n的followpos(n)的并集tmpSet
 					if (labelMap.get(i) == ch) {
 						tmpSet.addAll(followposMap.get(i));
 					}
@@ -418,28 +438,28 @@ public class Convert {
 							break;
 						}
 					}
-					if (eq == 0) {
+					if (eq == 0) { // tmpSet不在状态集中，则入栈
 						stateStack.push(tmpSet);
 					}
 					List<Object> rel = new ArrayList<Object>();
 					rel.add(state);
 					rel.add(ch);
 					rel.add(tmpSet);
-					tran.add(rel);
+					tran.add(rel); // 在状态转换集中添加转换关系(state，ch)->tmpSet
 				}
 			}
 		}
 		List<Character> labelList = new ArrayList<Character>();
 		labelList.addAll(set);
 		int[][] intMatrix = new int[stateList.size()][set.size() + 1];
-		for (int i = 0; i < stateList.size(); i++) {
+		for (int i = 0; i < stateList.size(); i++) { // 初始化二维整型数组
 			for (int j = 0; j < set.size() + 1; j++) {
 				intMatrix[i][j] = -1;
 			}
 		}
 		Set<Integer> state = new HashSet<Integer>();
 		int i = -1, j = 0;
-		for (List<Object> rela : tran) {
+		for (List<Object> rela : tran) {  // 将状态转换集中的转换关系处理后添加到二维整型数组中
 			if (!isSetEqual(state, (Set<Integer>) rela.get(0))) {
 				j = 0;
 				i++;
@@ -455,14 +475,20 @@ public class Convert {
 		char[] labelArray = new char[labelList.size() + 1];
 		labelArray[0] = ' ';
 		int i2 = 1;
-		for (char ch : labelList) {
+		for (char ch : labelList) { // 将字符集存放到字符数组中
 			labelArray[i2] = ch;
 			i2++;
 		}
-		stateMatrix.setInCh(labelArray);
+		stateMatrix.setInCh(labelArray); // 添加字符集到stateMatrix对象中
 		return stateMatrix;
 	}
 
+	/**
+	 * 判断两个集合是否相等
+	 * @param set1
+	 * @param set2
+	 * @return
+	 */
 	private boolean isSetEqual(@SuppressWarnings("rawtypes") Set set1, @SuppressWarnings("rawtypes") Set set2) {
 
 		if (set1 == null && set2 == null) {
