@@ -181,7 +181,7 @@ public class Convert {
 				firstpos[i][j] = lastpos[i][j] = followpos[i][j] = 0;
 			}
 		}
-		for (int i = 0; i < length; i++) { // 求出各节点的nullable(n)、firstpos(n)、lastpos(n)、followpos(n)。nullable(n)
+		for (int i = 0; i < length; i++) { // 求出各节点的nullable(n)、firstpos(n)、lastpos(n)、followpos(n)
 			if (Isalpha(postfix.charAt(i)) || postfix.charAt(i) == '#') {  // 字母或终结符（语法树的叶子结点）
 				position[i] = pos;  // 为字母或终结符编号
 				pos++;
