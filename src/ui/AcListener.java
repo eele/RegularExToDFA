@@ -61,7 +61,7 @@ public class AcListener implements ActionListener {
 					Graph graph = new Graph(text.getText().trim());  // 绘制状态转换图
 					tabPanel1.setViewportView(graph);
 					
-					Matrix matrix = new Matrix(text.getText().trim());  // 绘制状态转换图
+					Matrix matrix = new Matrix(text.getText().trim());  // 绘制状态转换矩阵
 					tabPanel2.setViewportView(matrix);
 				} catch(EmptyStackException ex) {
 					JLabel msg1 = new JLabel("正规表达式输入有误，请检查后重新输入");
