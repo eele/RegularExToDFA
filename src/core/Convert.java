@@ -228,7 +228,7 @@ public class Convert {
 						lastpos[i][j] = lastpos[tree[i][0]][j];
 						j++;
 					}
-				} else { // 连接符
+				} else { // 连接符&
 					nullable[i] = (nullable[tree[i][0]] && nullable[tree[i][1]]);
 
 					if (nullable[tree[i][0]] == true) { // firstpos(i) = firstpos(c1) U firstpos(c2)
